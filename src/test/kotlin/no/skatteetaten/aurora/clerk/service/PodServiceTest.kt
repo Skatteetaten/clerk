@@ -44,12 +44,12 @@ class PodServiceTest : AbstractOpenShiftServerTest() {
 
     @Test
     fun `should ignore pods with different name`() {
-        withPods(createPod("yoda"), name="luke") {
+        withPods(createPod("yoda"), name = "luke") {
             assertThat(it).isEmpty()
         }
     }
 
-    fun withPods(vararg pod: Pod, name:String?=null, fn: (List<PodItem>) -> Unit) {
+    fun withPods(vararg pod: Pod, name: String? = null, fn: (List<PodItem>) -> Unit) {
         openShiftServer.openshiftClient.inNamespace(namespace).pods().create(*pod)
         val podService = PodService(openShiftServer.openshiftClient)
         val result = podService.getPodItems(namespace, name)
