@@ -18,9 +18,9 @@ class PodServiceTest : AbstractOpenShiftServerTest() {
     @Test
     fun `fetch a single pod`() {
 
-        withPods(createPod("yoda")) { result ->
-            assertThat(result.count()).isEqualTo(1)
-            val pod = result.first()
+        withPods(createPod("yoda")) {
+            assertThat(it.count()).isEqualTo(1)
+            val pod = it.first()
             assertThat(pod.name).isEqualTo("yoda-1")
             assertThat(pod.applicationName).isEqualTo("yoda")
             assertThat(pod.status).isEqualTo("Running")
@@ -30,22 +30,29 @@ class PodServiceTest : AbstractOpenShiftServerTest() {
 
     @Test
     fun `should ignore build pods when fetching pods`() {
-         withPods(createPod("yoda", podLabel = mapOf(buildPodLabel to "foo"))) { result ->
-            assertThat(result).isEmpty()
+        withPods(createPod("yoda", podLabel = mapOf(buildPodLabel to "foo"))) {
+            assertThat(it).isEmpty()
         }
     }
-
 
     @Test
     fun `should ignore deploy pods when fetching pods`() {
-         withPods(createPod("yoda", podLabel = mapOf(deployPodLabel to "foo"))) { result ->
-            assertThat(result).isEmpty()
+        withPods(createPod("yoda", podLabel = mapOf(deployPodLabel to "foo"))) {
+            assertThat(it).isEmpty()
         }
     }
-    fun withPods(vararg pod: Pod, fn: (List<PodItem>) -> Unit) {
+
+    @Test
+    fun `should ignore pods with different name`() {
+        withPods(createPod("yoda"), name="luke") {
+            assertThat(it).isEmpty()
+        }
+    }
+
+    fun withPods(vararg pod: Pod, name:String?=null, fn: (List<PodItem>) -> Unit) {
         openShiftServer.openshiftClient.inNamespace(namespace).pods().create(*pod)
         val podService = PodService(openShiftServer.openshiftClient)
-        val result = podService.getPodItems(namespace)
+        val result = podService.getPodItems(namespace, name)
         fn(result)
     }
 }

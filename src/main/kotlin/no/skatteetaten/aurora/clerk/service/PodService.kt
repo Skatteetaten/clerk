@@ -14,14 +14,17 @@ class PodService(val client: OpenShiftClient) {
         namespace: String,
         applicationName: String? = null
     ): List<PodItem> {
+
         val request = client.pods().inNamespace(namespace)
-            .withoutLabel(deployPodLabel)
-            .withoutLabel(buildPodLabel)
+
         val pods = applicationName?.let {
             request.withLabel("app", applicationName).list()
         } ?: request.list()
 
-        return pods.items.map {
+        return pods.items.filter {
+            val labels = it.metadata.labels
+            !labels.containsKey(deployPodLabel) && !labels.containsKey(buildPodLabel)
+        }.map {
 
             PodItem(
                 it.metadata.name,
