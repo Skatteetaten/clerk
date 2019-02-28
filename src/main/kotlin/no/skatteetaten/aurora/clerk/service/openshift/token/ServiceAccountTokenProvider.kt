@@ -1,12 +1,13 @@
 package no.skatteetaten.aurora.clerk.service.openshift.token
 
 import io.fabric8.kubernetes.client.OAuthTokenProvider
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
+import mu.KotlinLogging
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 import java.io.File
 import java.io.IOException
+
+private val logger = KotlinLogging.logger {}
 
 /**
  * Loader for the Application Token that will be used when loading resources from Openshift that does not require
@@ -18,8 +19,6 @@ import java.io.IOException
 class ServiceAccountTokenProvider(
     @Value("\${clerk.openshift.tokenLocation}") val tokenLocation: String
 ) : TokenProvider, OAuthTokenProvider {
-
-    private val logger: Logger = LoggerFactory.getLogger(ServiceAccountTokenProvider::class.java)
 
     private val tokenSupplier = { token: String -> readToken() }.memoize()
 

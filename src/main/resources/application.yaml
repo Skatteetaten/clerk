@@ -4,7 +4,7 @@ spring:
 
 logging:
     level:
-        no.skatteetaten.aurora.clerk: INFO
+        no.skatteetaten.aurora.clerk: DEBUG
         org:
             hibernate: WARN
             springframework: WARN
@@ -26,7 +26,6 @@ clerk:
 logging:
     pattern:
         console: "%d [%-9.9thread] %highlight(%-5level) %cyan(%logger:%L) %X - %msg %n%rEx{full}"
-    # add mokey.openshift.token to ~/.spring-boot-devtools.properties
 
 
 ---

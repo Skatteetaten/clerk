@@ -61,15 +61,14 @@ dependencies {
       'io.fabric8:openshift-client:4.1.2',
       'org.springframework.boot:spring-boot-starter-security',
       'org.springframework.boot:spring-boot-starter-web',
-      "io.github.microutils:kotlin-logging:1.6.24",
-      "uk.q3c.rest:hal-kotlin:0.5.3.2.a87244c"
+      "io.github.microutils:kotlin-logging:1.6.24"
   )
 
   [
       'org.junit.jupiter:junit-jupiter-api',
       "org.junit.jupiter:junit-jupiter-params:${junitJupiterVersion}",
       'org.springframework.boot:spring-boot-starter-test',
-      'io.fabric8:openshift-server-mock:4.1.1',
+      'io.fabric8:openshift-server-mock:4.1.2',
       'io.mockk:mockk:1.8.9',
       'com.willowtreeapps.assertk:assertk:0.10',
       'org.springframework.cloud:spring-cloud-starter-contract-stub-runner'

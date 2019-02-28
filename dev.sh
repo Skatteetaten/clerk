@@ -4,7 +4,7 @@ error_exit() {
   exit 1
 }
 
-name=gillis
+name=clerk
 oc get bc "$name" &> /dev/null || error_exit  "Build Config $1 does not exist"
 
 ./gradlew build -x test

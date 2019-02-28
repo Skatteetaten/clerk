@@ -8,7 +8,7 @@ def overrides = [
     javaVersion: "11",
     sonarQube: false,
     versionStrategy: [
-      [ branch: 'master', versionHint: '1' ]
+      [ branch: 'master', versionHint: '0' ]
     ]
 ]
 

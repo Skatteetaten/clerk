@@ -3,12 +3,15 @@ package no.skatteetaten.aurora.clerk.controller.security
 import io.fabric8.kubernetes.client.ConfigBuilder
 import io.fabric8.kubernetes.client.KubernetesClientException
 import io.fabric8.openshift.client.DefaultOpenShiftClient
+import mu.KotlinLogging
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.BadCredentialsException
 import org.springframework.security.core.Authentication
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken
 import org.springframework.stereotype.Component
 import java.util.regex.Pattern
+
+private val logger = KotlinLogging.logger {}
 
 @Component
 class BearerAuthenticationManager : AuthenticationManager {
