@@ -9,7 +9,7 @@ class PodService(val client: OpenShiftClient) {
 
     fun getPodItems(
         namespace: String,
-        applicationName: String?
+        applicationName: String? = null
     ): List<PodItem> {
         val request = client.pods().inNamespace(namespace)
             .withoutLabel("openshift.io/deployer-pod-for.name")

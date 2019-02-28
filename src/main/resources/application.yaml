@@ -4,7 +4,7 @@ spring:
 
 logging:
     level:
-        no.skatteetaten.aurora.clerk: DEBUG
+        no.skatteetaten.aurora.clerk: INFO
         org:
             hibernate: WARN
             springframework: WARN
