@@ -12,6 +12,8 @@ class PodService(val client: OpenShiftClient) {
         applicationName: String?
     ): List<PodItem> {
         val request = client.pods().inNamespace(namespace)
+            .withoutLabel("openshift.io/deployer-pod-for.name")
+            .withoutLabel("openshift.io/build.name")
         val pods = applicationName?.let {
             request.withLabel("app", applicationName).list()
         } ?: request.list()
