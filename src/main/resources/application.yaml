@@ -1,0 +1,34 @@
+spring:
+    profiles:
+        active: local
+
+logging:
+    level:
+        no.skatteetaten.aurora.clerk: INFO
+        org:
+            hibernate: WARN
+            springframework: WARN
+            apache:
+                catalina: WARN
+                velocity: WARN
+
+clerk:
+    openshift:
+        tokenLocation: /var/run/secrets/kubernetes.io/serviceaccount/token
+---
+spring:
+    profiles: local
+
+clerk:
+    openshift:
+        tokenLocation: /tmp/reader-token
+
+logging:
+    pattern:
+        console: "%d [%-9.9thread] %highlight(%-5level) %cyan(%logger:%L) %X - %msg %n%rEx{full}"
+    # add mokey.openshift.token to ~/.spring-boot-devtools.properties
+
+
+---
+spring:
+    profiles: openshift

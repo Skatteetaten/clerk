@@ -1,0 +1,20 @@
+logging:
+  level:
+    no.skatteetaten.aurora.mokey: INFO
+    org:
+      hibernate: WARN
+      springframework: WARN
+      apache:
+        catalina: WARN
+        velocity: WARN
+
+  pattern:
+    console: "%d [%thread] %-5level %logger:%L %X - %msg %n%rEx{full}"
+
+spring:
+  application:
+    name: clerk
+
+
+# INFO log enable to view the resolved version of the stubs artifact
+logging.level.org.springframework.cloud.contract.stubrunner.AetherStubDownloader: INFO
