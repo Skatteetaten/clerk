@@ -4,6 +4,9 @@ import io.fabric8.openshift.client.OpenShiftClient
 import no.skatteetaten.aurora.clerk.controller.PodItem
 import org.springframework.stereotype.Service
 
+val deployPodLabel = "openshift.io/deployer-pod-for.name"
+val buildPodLabel = "openshift.io/build.name"
+
 @Service
 class PodService(val client: OpenShiftClient) {
 
@@ -12,8 +15,8 @@ class PodService(val client: OpenShiftClient) {
         applicationName: String? = null
     ): List<PodItem> {
         val request = client.pods().inNamespace(namespace)
-            .withoutLabel("openshift.io/deployer-pod-for.name")
-            .withoutLabel("openshift.io/build.name")
+            .withoutLabel(deployPodLabel)
+            .withoutLabel(buildPodLabel)
         val pods = applicationName?.let {
             request.withLabel("app", applicationName).list()
         } ?: request.list()
