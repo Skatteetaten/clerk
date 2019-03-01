@@ -1,6 +1,5 @@
 package no.skatteetaten.aurora.clerk.controller
 
-import no.skatteetaten.aurora.clerk.AbstractSecurityControllerTest
 import no.skatteetaten.aurora.clerk.controller.security.BearerAuthenticationManager
 import no.skatteetaten.aurora.clerk.service.PodService
 import no.skatteetaten.aurora.clerk.service.openshift.token.UserDetailsProvider

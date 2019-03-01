@@ -1,62 +1,26 @@
 [
   {
-    "applicationName": "argus",
-    "name": "argus-4-bz6zt",
+    "applicationName": "luke",
+    "name": "luke-4-bz6zt",
     "startTime": "2019-02-25T14:02:06Z",
     "status": "Running"
   },
   {
-    "applicationName": "argus-web",
-    "name": "argus-web-2-f5q9f",
+    "applicationName": "luke-web",
+    "name": "luke-web-2-f5q9f",
     "startTime": "2019-02-19T08:42:09Z",
     "status": "Running"
   },
   {
-    "applicationName": "k77319-gobo",
-    "name": "k77319-gobo-16-f95q6",
+    "applicationName": "anakin",
+    "name": "anakin-16-f95q6",
     "startTime": "2019-01-29T06:14:59Z",
     "status": "Running"
   },
   {
-    "applicationName": "k82814-gobo",
-    "name": "k82814-gobo-4-scqgc",
+    "applicationName": "anakin",
+    "name": "anakin-16-scqgc",
     "startTime": "2019-02-28T12:44:52Z",
-    "status": "Running"
-  },
-  {
-    "applicationName": "m77828-boober",
-    "name": "m77828-boober-1-lh77m",
-    "startTime": "2019-01-29T06:20:43Z",
-    "status": "Running"
-  },
-  {
-    "applicationName": "m79861-gobo",
-    "name": "m79861-gobo-2-xwjql",
-    "startTime": "2019-02-25T14:49:50Z",
-    "status": "Running"
-  },
-  {
-    "applicationName": "m89870-boober",
-    "name": "m89870-boober-8-2th8l",
-    "startTime": "2019-02-27T08:08:32Z",
-    "status": "Running"
-  },
-  {
-    "applicationName": "m96405-cantus",
-    "name": "m96405-cantus-2-vmgct",
-    "startTime": "2019-02-27T13:34:55Z",
-    "status": "Running"
-  },
-  {
-    "applicationName": "m96405-gobo",
-    "name": "m96405-gobo-7-ws8gt",
-    "startTime": "2019-02-28T11:51:28Z",
-    "status": "Running"
-  },
-  {
-    "applicationName": "m96405-konsoll",
-    "name": "m96405-konsoll-1-v2rvv",
-    "startTime": "2019-02-27T13:19:46Z",
     "status": "Running"
   }
 ]

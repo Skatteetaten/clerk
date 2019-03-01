@@ -7,8 +7,8 @@ Contract.make {
   request {
     method 'GET'
     url $(
-        stub(~/\/api\/pods\/jedi/),
-        test('/api/pods/jedi')
+        stub(~/\/api\/pods\/jedi-test/),
+        test('/api/pods/jedi-test')
     )
   }
   response {
