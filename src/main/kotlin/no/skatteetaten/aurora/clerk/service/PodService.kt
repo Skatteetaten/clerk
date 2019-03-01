@@ -10,7 +10,7 @@ val buildPodLabel = "openshift.io/build.name"
 @Service
 class PodService(val client: OpenShiftClient) {
 
-    fun getPodItems(
+    open fun getPodItems(
         namespace: String,
         applicationName: String? = null
     ): List<PodItem> {
