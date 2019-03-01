@@ -1,6 +1,7 @@
 package no.skatteetaten.aurora.clerk.contracts
 
 import com.nhaarman.mockito_kotlin.any
+import no.skatteetaten.aurora.clerk.controller.ClerkResponse
 import no.skatteetaten.aurora.clerk.controller.PodItem
 import no.skatteetaten.aurora.clerk.controller.PodResourceAssembler
 import no.skatteetaten.aurora.clerk.controller.security.User
@@ -33,7 +34,14 @@ open class PodBase : ContractBase() {
                     "token"
                 )
             )
-            given(assembler.toAuroraResource<PodItem>(any(), any())).willReturn(it.response())
+
+            given(assembler.toAuroraResource<PodItem>(any(), any())).willAnswer { mock ->
+                if ((mock.arguments[1] as String).contains("whoami")) {
+                    it.response<ClerkResponse<PodItem>>("podForApplicationName")
+                } else {
+                    it.response("pod")
+                }
+            }
         }
     }
 }

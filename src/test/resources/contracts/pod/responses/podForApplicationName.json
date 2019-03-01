@@ -1,0 +1,13 @@
+{
+  "items": [
+    {
+      "applicationName": "whoami",
+      "name": "luke-4-bz6zt",
+      "startTime": "2019-02-25T14:02:06Z",
+      "status": "Running"
+    }
+  ],
+  "success": true,
+  "message": "Fetched count=1 pods for namespace=jedi-test ",
+  "count": 1
+}
