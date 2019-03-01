@@ -1,26 +1,31 @@
-[
-  {
-    "applicationName": "luke",
-    "name": "luke-4-bz6zt",
-    "startTime": "2019-02-25T14:02:06Z",
-    "status": "Running"
-  },
-  {
-    "applicationName": "luke-web",
-    "name": "luke-web-2-f5q9f",
-    "startTime": "2019-02-19T08:42:09Z",
-    "status": "Running"
-  },
-  {
-    "applicationName": "anakin",
-    "name": "anakin-16-f95q6",
-    "startTime": "2019-01-29T06:14:59Z",
-    "status": "Running"
-  },
-  {
-    "applicationName": "anakin",
-    "name": "anakin-16-scqgc",
-    "startTime": "2019-02-28T12:44:52Z",
-    "status": "Running"
-  }
-]
+{
+  "items": [
+    {
+      "applicationName": "luke",
+      "name": "luke-4-bz6zt",
+      "startTime": "2019-02-25T14:02:06Z",
+      "status": "Running"
+    },
+    {
+      "applicationName": "luke-web",
+      "name": "luke-web-2-f5q9f",
+      "startTime": "2019-02-19T08:42:09Z",
+      "status": "Running"
+    },
+    {
+      "applicationName": "anakin",
+      "name": "anakin-16-f95q6",
+      "startTime": "2019-01-29T06:14:59Z",
+      "status": "Running"
+    },
+    {
+      "applicationName": "anakin",
+      "name": "anakin-16-scqgc",
+      "startTime": "2019-02-28T12:44:52Z",
+      "status": "Running"
+    }
+  ],
+  "success": true,
+  "message": "Fetched count=4 pods for namespace=jedi-test ",
+  "count": 4
+}

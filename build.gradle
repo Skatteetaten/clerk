@@ -115,9 +115,7 @@ test {
   useJUnitPlatform()
 }
 
-/*
 contracts {
   packageWithBaseClasses = 'no.skatteetaten.aurora.clerk.contracts'
   testFramework = 'JUNIT5'
 }
- */
