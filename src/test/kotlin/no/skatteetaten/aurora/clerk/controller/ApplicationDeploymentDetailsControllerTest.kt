@@ -29,7 +29,7 @@ class ApplicationDeploymentDetailsControllerTest : AbstractSecurityControllerTes
     @MockBean
     lateinit var podService: PodService
 
-    val started=Instant.now().toString()
+    val started = Instant.now().toString()
     val namespace = "jedi-test"
     val pods = listOf(PodItem("luke-1", "luke", started, "Running"))
 
@@ -42,9 +42,9 @@ class ApplicationDeploymentDetailsControllerTest : AbstractSecurityControllerTes
         // TODO: kan dette skrives ved å sammenligne objektet over med noe her?
         mockMvc.perform(get("/api/pods/{namespace}", namespace))
             .andExpect(status().isOk)
-            .andExpect( jsonPath( "$.items[0].name", `is`("luke-1") ))
-            .andExpect( jsonPath( "$.items[0].applicationName", `is`("luke") ))
-            .andExpect( jsonPath( "$.items[0].startTime", `is`(started) ))
-            .andExpect( jsonPath( "$.items[0].status", `is`("Running") ))
+            .andExpect(jsonPath("$.items[0].name", `is`("luke-1")))
+            .andExpect(jsonPath("$.items[0].applicationName", `is`("luke")))
+            .andExpect(jsonPath("$.items[0].startTime", `is`(started)))
+            .andExpect(jsonPath("$.items[0].status", `is`("Running")))
     }
 }

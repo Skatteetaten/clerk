@@ -15,4 +15,3 @@ open class AbstractSecurityControllerTest : AbstractTest() {
     @Autowired
     lateinit var mockMvc: MockMvc
 }
-

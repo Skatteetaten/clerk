@@ -25,6 +25,7 @@ plugins {
 
 ext.aurora = [
     requireStaging          : false,
+    applyCheckstylePlugin   : false,
     applySpockSupport       : false,
     setProjectVersionFromGit: false
 ]
@@ -108,7 +109,9 @@ test {
   useJUnitPlatform()
 }
 
+/*
 contracts {
   packageWithBaseClasses = 'no.skatteetaten.aurora.clerk.contracts'
   testFramework = 'JUNIT5'
 }
+ */
