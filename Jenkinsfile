@@ -6,6 +6,8 @@ def overrides = [
     credentialsId: "github",
     checkstyle : false,
     javaVersion: "11",
+    jiraFiksetIKomponentversjon: true,
+    chatRoom: "#aos-notifications",
     sonarQube: false,
     versionStrategy: [
       [ branch: 'master', versionHint: '0' ]
