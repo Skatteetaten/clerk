@@ -30,15 +30,19 @@ class ApplicationDeploymentDetailsControllerTest : AbstractSecurityControllerTes
     @MockBean
     lateinit var podService: PodService
 
+    val name = "luke"
     val started = Instant.now().toString()
     val namespace = "jedi-test"
-    val pods = listOf(PodItem("luke-1", "luke", started, "Running"))
+
+    val luke = PodItem("$name-1", name, started, "Running")
+
+    val yoda = PodItem("yoda-1", "yoda", started, "Running")
 
     @Test
     @WithUserDetails
     fun `should get all pods in namespace`() {
 
-        given(podService.getPodItems(namespace)).willReturn(pods)
+        given(podService.getPodItems(namespace)).willReturn(listOf(luke, yoda))
 
         // TODO: kan dette skrives ved å sammenligne objektet over med noe her?
         mockMvc.perform(
@@ -50,6 +54,28 @@ class ApplicationDeploymentDetailsControllerTest : AbstractSecurityControllerTes
             .andExpect(jsonPath("$.items[0].applicationName", `is`("luke")))
             .andExpect(jsonPath("$.items[0].startTime", `is`(started)))
             .andExpect(jsonPath("$.items[0].status", `is`("Running")))
-            .andDo(document("pods"))
+            .andExpect(jsonPath("$.items[1].name", `is`("yoda-1")))
+            .andExpect(jsonPath("$.items[1].applicationName", `is`("yoda")))
+            .andExpect(jsonPath("$.items[1].startTime", `is`(started)))
+            .andExpect(jsonPath("$.items[1].status", `is`("Running")))
+            .andDo(document("list-pods"))
+    }
+
+    @Test
+    @WithUserDetails
+    fun `should get pods for application in namespace`() {
+
+        given(podService.getPodItems(namespace, name)).willReturn(listOf(luke))
+
+        mockMvc.perform(
+            get("/api/pods/{namespace}?applicationName=$name", namespace)
+                .header("Authorization", "Bearer <token>")
+        )
+            .andExpect(status().isOk)
+            .andExpect(jsonPath("$.items[0].name", `is`("luke-1")))
+            .andExpect(jsonPath("$.items[0].applicationName", `is`("luke")))
+            .andExpect(jsonPath("$.items[0].startTime", `is`(started)))
+            .andExpect(jsonPath("$.items[0].status", `is`("Running")))
+            .andDo(document("app-pods"))
     }
 }
