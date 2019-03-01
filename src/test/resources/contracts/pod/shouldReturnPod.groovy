@@ -1,4 +1,4 @@
-package pod
+package contracts.pod
 
 import org.springframework.cloud.contract.spec.Contract
 
