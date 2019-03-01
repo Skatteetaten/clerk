@@ -4,16 +4,25 @@ import no.skatteetaten.aurora.clerk.controller.security.BearerAuthenticationMana
 import no.skatteetaten.aurora.clerk.service.PodService
 import no.skatteetaten.aurora.clerk.service.openshift.token.UserDetailsProvider
 import org.hamcrest.Matchers.`is`
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.junit.runner.RunWith
 import org.mockito.BDDMockito.given
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs
 import org.springframework.boot.test.autoconfigure.web.client.AutoConfigureWebClient
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.boot.test.mock.mockito.MockBean
+import org.springframework.restdocs.RestDocumentationContextProvider
+import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document
+import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration
 import org.springframework.security.test.context.support.WithUserDetails
+import org.springframework.test.context.junit4.SpringRunner
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import org.springframework.test.web.servlet.setup.DefaultMockMvcBuilder
+import org.springframework.test.web.servlet.setup.MockMvcBuilders
+import org.springframework.web.context.WebApplicationContext
 import java.time.Instant
 
 @WebMvcTest(
@@ -33,6 +42,7 @@ class ApplicationDeploymentDetailsControllerTest : AbstractSecurityControllerTes
     val namespace = "jedi-test"
     val pods = listOf(PodItem("luke-1", "luke", started, "Running"))
 
+
     @Test
     @WithUserDetails
     fun `should get all pods in namespace`() {
@@ -46,5 +56,6 @@ class ApplicationDeploymentDetailsControllerTest : AbstractSecurityControllerTes
             .andExpect(jsonPath("$.items[0].applicationName", `is`("luke")))
             .andExpect(jsonPath("$.items[0].startTime", `is`(started)))
             .andExpect(jsonPath("$.items[0].status", `is`("Running")))
+            .andDo(document("home"))
     }
 }

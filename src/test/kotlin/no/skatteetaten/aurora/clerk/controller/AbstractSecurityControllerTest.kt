@@ -5,10 +5,11 @@ import no.skatteetaten.aurora.clerk.TestUserDetailsService
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Import
+import org.springframework.restdocs.RestDocumentationExtension
 import org.springframework.test.context.junit.jupiter.SpringExtension
 import org.springframework.test.web.servlet.MockMvc
 
-@ExtendWith(SpringExtension::class)
+@ExtendWith(SpringExtension::class, RestDocumentationExtension::class)
 @Import(TestUserDetailsService::class)
 open class AbstractSecurityControllerTest : AbstractTest() {
 
