@@ -7,6 +7,7 @@ import no.skatteetaten.aurora.clerk.service.openshift.token.UserDetailsProvider
 import org.junit.jupiter.api.BeforeEach
 import org.mockito.BDDMockito.given
 import org.springframework.boot.test.mock.mockito.MockBean
+import org.springframework.context.annotation.Import
 import org.springframework.security.test.context.support.WithMockUser
 
 @WithMockUser
@@ -15,7 +16,7 @@ class PodBase : ContractBase() {
     @MockBean
     private lateinit var podService: PodService
 
-
+    // TODO kan vi bruke samme metode som i controller testene her og slippe å mocke userDetailsProvider?
     @MockBean
     private lateinit var userDetailsProvider: UserDetailsProvider
 

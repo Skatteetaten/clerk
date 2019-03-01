@@ -2,6 +2,7 @@ package pod
 
 import org.springframework.cloud.contract.spec.Contract
 
+// TODO: Finner ikke podBase når jeg kjører
 Contract.make {
   request {
     method 'GET'
