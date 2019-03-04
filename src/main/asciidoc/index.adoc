@@ -13,20 +13,24 @@ Aurora Openshift Paas <utvpaas@skatteetaten.no>
 This documents describes the api of Clerk, an proxy to get information from the Kubernetes/OpenShift cluster.
 
 Operations supported for now :
+
  - fetch a list of pods in your own namespace, optionally filtered on name of the application
 
 [resources]
 
-== How to use Clerk in your application
-Clerk required a Authorization Bearer token that is the serviceAccount token your application is running in.
+== Authorization
+Clerk required a Authorization Bearer token that is the serviceAccount token your application is running in. An application
+is then permitted to perform operations in its own namespace.
 
 In order to get this token in a running application in your cluster you can read the file
 ``/var/run/secrets/kubernetes.io/serviceaccount/token``
 
+=== Local testing
 
-== How to test an application against Clerk locally
-Clerk requires an serviceaccount token that is in the same namespace as the pods you want to fetch. In order to obtain this
-token you can run the following chain of commands
+To test out clerk locally you need to fetch the token for the namespace you want to test against.
+
+
+Run the following invocation to obtain the token:
 
 ``oc get sa default -n $namespace -o json | jq -r ".secrets[0].name" | xargs -i oc get secret {} -o json | jq --arg name "token" '.data[$name]' -r | base64 -d > /tmp/clerk-token``
 
@@ -35,6 +39,28 @@ Where $namespace is the name of the namespace you want to fetch pods in.
 Then read ``/tmp/clerk-token`` in your local profile
 
 == Resources
+
+=== Pods
+List out pods for all applications in a namespace
+
+include::{snippets}/list-pods/http-request.adoc[]
+
+Httpie:
+include::{snippets}/list-pods/httpie-request.adoc[]
+
+Curl:
+include::{snippets}/list-pods/curl-request.adoc[]
+
+Response:
+include::{snippets}/list-pods/http-response.adoc[]
+
+If you try to use clerk with an invalid token you will get an 401 Unauthorized:
+include::{snippets}/error-pods/http-response.adoc[]
+
+==== Filter on application
+It is also possible to filter the pods on applicationName
+include::{snippets}/app-pods/http-request.adoc[]
+include::{snippets}/app-pods/http-response.adoc[]
 
 
 [[overview]]

@@ -1,15 +1,8 @@
 buildscript {
-  ext.repos = {
-    mavenLocal()
-    maven { url "http://aurora/nexus/content/groups/public" }
-    mavenCentral()
-  }
-
-  repositories repos
 
   dependencies {
     classpath(
-        'no.skatteetaten.aurora.gradle.plugins:aurora-gradle-plugin:2.0.3-SNAPSHOT',
+        'no.skatteetaten.aurora.gradle.plugins:aurora-gradle-plugin:2.0.4-SNAPSHOT',
         'org.springframework.cloud:spring-cloud-contract-gradle-plugin:2.1.0.RELEASE'
     )
   }
@@ -34,7 +27,8 @@ ext.aurora = [
 apply plugin: 'spring-cloud-contract'
 apply plugin: 'no.skatteetaten.plugins.aurora'
 
-repositories repos
+group = groupId
+version "${version}"
 
 dependencyManagement {
   imports {
@@ -49,7 +43,7 @@ dependencies {
       'org.springframework.boot:spring-boot-starter-security',
       'org.springframework.boot:spring-boot-starter-web'
   )
-  [
+  testCompile(
       'org.springframework.cloud:spring-cloud-starter-contract-verifier',
       'org.springframework.restdocs:spring-restdocs-mockmvc',
       'org.springframework.security:spring-security-test',
@@ -59,8 +53,7 @@ dependencies {
       'com.willowtreeapps.assertk:assertk-jvm:0.13',
       "com.fkorotkov:kubernetes-dsl:2.0.1",
       'com.nhaarman:mockito-kotlin:1.6.0'
-  ].each { testCompile(it) { exclude group: 'junit' } }
-
+  )
 
   testImplementation(
       "com.squareup.okhttp3:mockwebserver:3.12.0"

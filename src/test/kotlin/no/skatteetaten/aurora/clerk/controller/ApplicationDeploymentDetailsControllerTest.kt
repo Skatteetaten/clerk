@@ -40,11 +40,24 @@ class ApplicationDeploymentDetailsControllerTest : AbstractSecurityControllerTes
 
     @Test
     @WithUserDetails
+    fun `should get error if incorrect namespace in token`() {
+
+        mockMvc.perform(
+            get("/api/pods/{namespace}", "sith")
+                .header("Authorization", "Bearer <token>")
+        )
+            .andExpect(status().isUnauthorized)
+            .andExpect(jsonPath("$.success", `is`(false)))
+            .andExpect(jsonPath("$.message", `is`("Only an application in the same namespace can use clerk.")))
+            .andDo(document("error-pods"))
+    }
+
+    @Test
+    @WithUserDetails
     fun `should get all pods in namespace`() {
 
         given(podService.getPodItems(namespace)).willReturn(listOf(luke, yoda))
 
-        // TODO: kan dette skrives ved å sammenligne objektet over med noe her?
         mockMvc.perform(
             get("/api/pods/{namespace}", namespace)
                 .header("Authorization", "Bearer <token>")
