@@ -7,7 +7,7 @@
     }
   },
   "java": {
-    "mainClass": "no.skatteetaten.aurora.clerk.Main",
+    "mainClass": "no.skatteetaten.aurora.clerk.MainKt",
     "jvmOpts": "-Dspring.profiles.active=openshift",
     "applicationArgs": "--logging.config=${LOGBACK_FILE}"
   }
