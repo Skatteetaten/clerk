@@ -24,7 +24,7 @@ import java.time.Instant
     BearerAuthenticationManager::class
 )
 @AutoConfigureWebClient
-@AutoConfigureRestDocs("build/docs/generated-snippets")
+@AutoConfigureRestDocs
 class ApplicationDeploymentDetailsControllerTest : AbstractSecurityControllerTest() {
 
     @MockBean
