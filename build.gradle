@@ -13,7 +13,6 @@ buildscript {
   }
 }
 
-repositories repos
 
 plugins {
   id "org.jetbrains.kotlin.jvm" version "1.3.21"
@@ -33,6 +32,8 @@ ext.aurora = [
 
 apply plugin: 'spring-cloud-contract'
 apply plugin: 'no.skatteetaten.plugins.aurora'
+
+repositories repos
 
 group = groupId
 version "${version}"
