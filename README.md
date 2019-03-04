@@ -13,7 +13,6 @@ In order to use this project you must set repositories in your `~/.gradle/init.g
 
     allprojects {
         ext.repos= {
-            mavenLocal()
             maven { url "http://aurora/nexus/content/groups/public" }
             mavenCentral()
         }
