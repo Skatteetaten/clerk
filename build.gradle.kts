@@ -1,6 +1,6 @@
 buildscript {
     dependencies {
-        classpath("no.skatteetaten.aurora.gradle.plugins:aurora-gradle-plugin:2.0.16-SNAPSHOT")
+        classpath("no.skatteetaten.aurora.gradle.plugins:aurora-gradle-plugin:2.0.17-SNAPSHOT")
         classpath("org.springframework.cloud:spring-cloud-contract-gradle-plugin:2.1.0.RELEASE")
     }
 }
@@ -23,6 +23,7 @@ dependencies {
     implementation("io.fabric8:openshift-client:4.1.2")
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-web")
+
     testImplementation("org.springframework.cloud:spring-cloud-starter-contract-verifier")
     testImplementation("org.springframework.restdocs:spring-restdocs-mockmvc")
     testImplementation("org.springframework.security:spring-security-test")
@@ -34,3 +35,5 @@ dependencies {
     testImplementation("com.nhaarman:mockito-kotlin:1.6.0")
     testImplementation("com.squareup.okhttp3:mockwebserver:3.12.0")
 }
+
+tasks.findByPath("compileTestGroovy")?.enabled=false
