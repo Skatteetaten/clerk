@@ -1,7 +1,8 @@
 buildscript {
     dependencies {
+        val springCloudContractVersion: String = project.property("aurora.springCloudContractVersion") as String
         classpath("no.skatteetaten.aurora.gradle.plugins:aurora-gradle-plugin:2.0.17-SNAPSHOT")
-        classpath("org.springframework.cloud:spring-cloud-contract-gradle-plugin:2.1.0.RELEASE")
+        classpath("org.springframework.cloud:spring-cloud-contract-gradle-plugin:$springCloudContractVersion")
     }
 }
 
@@ -36,4 +37,4 @@ dependencies {
     testImplementation("com.squareup.okhttp3:mockwebserver:3.12.0")
 }
 
-tasks.findByPath("compileTestGroovy")?.enabled=false
+tasks.findByPath("compileTestGroovy")?.enabled = false
