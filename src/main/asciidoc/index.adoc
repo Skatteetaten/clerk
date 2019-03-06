@@ -32,7 +32,7 @@ To test out clerk locally you need to fetch the token for the namespace you want
 
 Run the following invocation to obtain the token:
 
-``oc get sa default -n $namespace -o json | jq -r ".secrets[0].name" | xargs -i oc get secret {} -o json | jq --arg name "token" '.data[$name]' -r | base64 -d > /tmp/clerk-token``
+``oc get sa default -n $namespace -o json | jq -r ".secrets[].name" | grep -v docker | xargs -i oc get secret {} -o json | jq --arg name "token" '.data[$name]' -r | base64 -d > /tmp/clerk-token``
 
 Where $namespace is the name of the namespace you want to fetch pods in.
 
