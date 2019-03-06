@@ -10,8 +10,9 @@ plugins {
     id("org.jetbrains.kotlin.jvm") version "1.3.21"
     id("org.jetbrains.kotlin.plugin.spring") version "1.3.21"
     id("org.springframework.boot") version "2.1.3.RELEASE"
-    id("org.jlleitschuh.gradle.ktlint") version "6.3.1"
-    id("com.github.ben-manes.versions") version "0.20.0"
+    id("org.jlleitschuh.gradle.ktlint") version "7.1.0"
+    id("com.github.ben-manes.versions") version "0.21.0"
+    id("se.patrikerdes.use-latest-versions") version "0.2.9"
     id("com.gorylenko.gradle-git-properties") version "2.0.0"
     id("org.sonarqube") version "2.7"
     id("org.asciidoctor.convert") version "1.6.0"
@@ -21,7 +22,7 @@ plugins {
 apply(plugin = "spring-cloud-contract")
 
 dependencies {
-    implementation("io.fabric8:openshift-client:4.1.2")
+    implementation("io.fabric8:openshift-client:4.1.3")
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-web")
 
@@ -29,8 +30,8 @@ dependencies {
     testImplementation("org.springframework.restdocs:spring-restdocs-mockmvc")
     testImplementation("org.springframework.security:spring-security-test")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
-    testImplementation("io.fabric8:openshift-server-mock:4.1.2")
-    testImplementation("io.mockk:mockk:1.8.9")
+    testImplementation("io.fabric8:openshift-server-mock:4.1.3")
+    testImplementation("io.mockk:mockk:1.9.1")
     testImplementation("com.willowtreeapps.assertk:assertk-jvm:0.13")
     testImplementation("com.fkorotkov:kubernetes-dsl:2.0.1")
     testImplementation("com.nhaarman:mockito-kotlin:1.6.0")
