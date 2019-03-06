@@ -1,7 +1,7 @@
 buildscript {
     dependencies {
+        //must specify this in gradle.properties since the same version must be here and in aurora plugin
         val springCloudContractVersion: String = project.property("aurora.springCloudContractVersion") as String
-        classpath("no.skatteetaten.aurora.gradle.plugins:aurora-gradle-plugin:2.0.17-SNAPSHOT")
         classpath("org.springframework.cloud:spring-cloud-contract-gradle-plugin:$springCloudContractVersion")
     }
 }
@@ -15,10 +15,10 @@ plugins {
     id("com.gorylenko.gradle-git-properties") version "2.0.0"
     id("org.sonarqube") version "2.7"
     id("org.asciidoctor.convert") version "1.6.0"
+    id("no.skatteetaten.gradle.aurora") version "1.0.0-rc2"
 }
 
 apply(plugin = "spring-cloud-contract")
-apply(plugin = "no.skatteetaten.plugins.aurora")
 
 dependencies {
     implementation("io.fabric8:openshift-client:4.1.2")
