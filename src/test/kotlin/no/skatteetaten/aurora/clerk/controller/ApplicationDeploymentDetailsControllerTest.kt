@@ -1,6 +1,5 @@
 package no.skatteetaten.aurora.clerk.controller
 
-import com.github.tomakehurst.wiremock.client.WireMock.containing
 import no.skatteetaten.aurora.clerk.controller.security.BearerAuthenticationManager
 import no.skatteetaten.aurora.clerk.service.PodService
 import no.skatteetaten.aurora.clerk.service.openshift.token.UserDetailsProvider
@@ -12,7 +11,7 @@ import org.springframework.boot.test.autoconfigure.web.client.AutoConfigureWebCl
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.http.HttpHeaders
-import org.springframework.http.HttpHeaders.AUTHORIZATION
+import org.springframework.http.HttpStatus
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document
 import org.springframework.security.test.context.support.WithUserDetails
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
@@ -44,10 +43,14 @@ class ApplicationDeploymentDetailsControllerTest : AbstractSecurityControllerTes
     @Test
     @WithUserDetails
     fun `should get error if incorrect namespace in token`() {
-        mockMvc.getWithDocsBeaer("error-pods", "/api/pods/{namespace}", "sith") {
-            it.andExpect(status().isUnauthorized)
-                .andExpect(jsonPath("$.success", `is`(false)))
-                .andExpect(jsonPath("$.message", `is`("Only an application in the same namespace can use clerk.")))
+        mockMvc.get(
+            HttpHeaders().authorization("Bearer <token>"),
+            "error-pods",
+            "/api/pods/{namespace}", "sith"
+        ) {
+            it.status(HttpStatus.UNAUTHORIZED)
+                .jsonPathEquals("$.success", false)
+                .jsonPathEquals("$.message", "Only an application in the same namespace can use clerk.")
         }
     }
 
