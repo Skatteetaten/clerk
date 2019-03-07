@@ -44,12 +44,10 @@ class ApplicationDeploymentDetailsControllerTest : AbstractSecurityControllerTes
     @Test
     @WithUserDetails
     fun `should get error if incorrect namespace in token`() {
-        mockMvc.get(HttpHeaders().authorization("Bearer <token>"), "/api/pods/{namespace}", "sith") {
+        mockMvc.getWithDocsBeaer("error-pods", "/api/pods/{namespace}", "sith") {
             it.andExpect(status().isUnauthorized)
                 .andExpect(jsonPath("$.success", `is`(false)))
                 .andExpect(jsonPath("$.message", `is`("Only an application in the same namespace can use clerk.")))
-                .andDo(verifyWireMock(it.get().withHeader(AUTHORIZATION, containing("Bearer"))))
-                .andDo(document("error-pods"))
         }
     }
 
