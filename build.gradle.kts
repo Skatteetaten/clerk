@@ -48,6 +48,13 @@ dependencies {
 
 tasks.findByPath("compileTestGroovy")?.enabled = false
 
-configure<ContractVerifierExtension> {
-    stubsOutputDir = project.file("${project.buildDir}/generated-snippets/stubs")
+tasks.create<Jar>("stubsJar") {
+    dependsOn("test")
+    archiveClassifier.set("stubs")
+
+    into("META-INF/${project.group}/${project.name}/${project.version}/mappings") {
+        include("**/*.*")
+        from("${project.buildDir}/generated-snippets/stubs")
+    }
 }
+
