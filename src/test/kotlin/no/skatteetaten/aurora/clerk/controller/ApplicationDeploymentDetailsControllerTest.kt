@@ -60,7 +60,9 @@ class ApplicationDeploymentDetailsControllerTest : AbstractSecurityControllerTes
             "list-pods",
             "/api/pods/{namespace}", namespace
         ) {
-            it.status(OK).responseJsonPath("$.items[0]").equalsObject(luke)
+            it.status(OK)
+                .responseJsonPath("$.items[0]").equalsObject(luke)
+                .responseJsonPath("$.items[1]").equalsObject(yoda)
         }
     }
 
