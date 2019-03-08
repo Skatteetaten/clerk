@@ -1,3 +1,5 @@
+import org.springframework.cloud.contract.verifier.plugin.ContractVerifierExtension
+
 buildscript {
     dependencies {
         //must specify this in gradle.properties since the same version must be here and in aurora plugin
@@ -46,3 +48,6 @@ dependencies {
 
 tasks.findByPath("compileTestGroovy")?.enabled = false
 
+configure<ContractVerifierExtension> {
+    stubsOutputDir = project.file("${project.buildDir}/generated-snippets/stubs")
+}
