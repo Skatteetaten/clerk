@@ -1,8 +1,13 @@
 package no.skatteetaten.aurora.clerk.controller
 
+import assertk.assertThat
+import assertk.assertions.isEqualTo
+import com.fasterxml.jackson.module.kotlin.convertValue
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.github.tomakehurst.wiremock.client.MappingBuilder
 import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.client.WireMock.matching
+import com.jayway.jsonpath.JsonPath
 import no.skatteetaten.aurora.clerk.AbstractTest
 import no.skatteetaten.aurora.clerk.TestUserDetailsService
 import org.hamcrest.Matchers.equalTo
@@ -19,8 +24,8 @@ import org.springframework.test.context.junit.jupiter.SpringExtension
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.ResultActions
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import org.springframework.web.util.UriComponentsBuilder
 
 @ExtendWith(SpringExtension::class, RestDocumentationExtension::class)
@@ -67,7 +72,22 @@ fun ContractResultHandler.get(mockMvcData: MockMvcData): MappingBuilder? {
     return get
 }
 
-fun ResultActions.status(expected: HttpStatus) = this.andExpect(MockMvcResultMatchers.status().`is`(expected.value()))
+fun ResultActions.status(expected: HttpStatus) = this.andExpect(status().`is`(expected.value()))
 
-fun ResultActions.jsonPathEquals(expression: String, value: Any) =
-    this.andExpect(jsonPath(expression, equalTo(value)))
+data class JsonPathEquals(val expression: String, val resultActions: ResultActions) {
+    fun equalsValue(value: Any): ResultActions {
+        resultActions.andExpect(jsonPath(expression, equalTo(value)))
+        return resultActions
+    }
+
+    fun equalsObject(expected: Any): ResultActions {
+        val expectedValue = jacksonObjectMapper().convertValue<LinkedHashMap<String, *>>(expected)
+        resultActions.andExpect {
+            val response = JsonPath.read<LinkedHashMap<String, *>>(it.response.contentAsString, expression)
+            assertThat(response).isEqualTo(expectedValue)
+        }
+        return resultActions
+    }
+}
+
+fun ResultActions.responseJsonPath(jsonPath: String) = JsonPathEquals(jsonPath, this)
