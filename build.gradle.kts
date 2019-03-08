@@ -1,5 +1,3 @@
-import org.springframework.cloud.contract.verifier.plugin.ContractVerifierExtension
-
 buildscript {
     dependencies {
         //must specify this in gradle.properties since the same version must be here and in aurora plugin
@@ -47,14 +45,20 @@ dependencies {
 }
 
 tasks.findByPath("compileTestGroovy")?.enabled = false
+tasks.getByName("verifierStubsJar").enabled = false
 
-tasks.create<Jar>("stubsJar") {
-    dependsOn("test")
-    archiveClassifier.set("stubs")
+tasks {
+    val stubsJar by creating(Jar::class) {
+        dependsOn("test")
+        archiveClassifier.set("stubs")
 
-    into("META-INF/${project.group}/${project.name}/${project.version}/mappings") {
-        include("**/*.*")
-        from("${project.buildDir}/generated-snippets/stubs")
+        into("META-INF/${project.group}/${project.name}/${project.version}/mappings") {
+            include("**/*.*")
+            from("${project.buildDir}/generated-snippets/stubs")
+        }
+    }
+
+    artifacts {
+        add("archives", stubsJar)
     }
 }
-
