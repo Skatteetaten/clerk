@@ -20,7 +20,7 @@ plugins {
     id("com.github.ben-manes.versions") version "0.21.0"
     id("se.patrikerdes.use-latest-versions") version "0.2.9"
 
-    id("no.skatteetaten.gradle.aurora") version "2.0.0"
+    id("no.skatteetaten.gradle.aurora") version "2.0.1-rc3"
 }
 
 apply(plugin = "spring-cloud-contract")
@@ -33,8 +33,6 @@ dependencies {
 
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-web")
-    testImplementation("org.springframework.cloud:spring-cloud-starter-contract-verifier")
-    testImplementation("org.springframework.cloud:spring-cloud-contract-wiremock")
     testImplementation("org.springframework.restdocs:spring-restdocs-mockmvc")
     testImplementation("org.springframework.security:spring-security-test")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
@@ -42,23 +40,4 @@ dependencies {
     testImplementation("io.mockk:mockk:1.9.1")
     testImplementation("com.willowtreeapps.assertk:assertk-jvm:0.13")
     testImplementation("com.nhaarman:mockito-kotlin:1.6.0")
-}
-
-tasks.findByPath("compileTestGroovy")?.enabled = false
-tasks.getByName("verifierStubsJar").enabled = false
-
-tasks {
-    val stubsJar by creating(Jar::class) {
-        dependsOn("test")
-        archiveClassifier.set("stubs")
-
-        into("META-INF/${project.group}/${project.name}/${project.version}/mappings") {
-            include("**/*.*")
-            from("${project.buildDir}/generated-snippets/stubs")
-        }
-    }
-
-    artifacts {
-        add("archives", stubsJar)
-    }
 }
