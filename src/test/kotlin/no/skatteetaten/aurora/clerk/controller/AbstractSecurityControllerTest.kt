@@ -7,6 +7,8 @@ import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.github.tomakehurst.wiremock.client.MappingBuilder
 import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.client.WireMock.matching
+import com.github.tomakehurst.wiremock.matching.RegexPattern
+import com.github.tomakehurst.wiremock.matching.UrlPattern
 import com.jayway.jsonpath.JsonPath
 import no.skatteetaten.aurora.clerk.AbstractTest
 import no.skatteetaten.aurora.clerk.TestUserDetailsService
@@ -42,22 +44,33 @@ fun HttpHeaders.authorization(value: String): HttpHeaders {
 }
 
 data class MockMvcData(val requestUrl: String, val results: ResultActions) : ResultActions by results {
-    fun get() = WireMock.get(requestUrl)!!
+    private val containsPlaceholder = Regex(pattern = "\\{.+?}")
+
+    fun get(): MappingBuilder = getWireMockUrl()?.let { WireMock.get(it) } ?: WireMock.get(requestUrl)
+
+    fun getWireMockUrl(): UrlPattern? =
+        if (requestUrl.contains(containsPlaceholder)) {
+            UrlPattern(RegexPattern(requestUrl.replace(containsPlaceholder, ".+")), true)
+        } else {
+            null
+        }
+}
+
+class UrlTemplate(val template: String, vararg val vars: String) {
+    fun urlString() = UriComponentsBuilder.fromUriString(template).buildAndExpand(*vars).encode().toUri().toString()
 }
 
 fun MockMvc.get(
     headers: HttpHeaders? = null,
     docsIdentifier: String,
-    urlTemplate: String,
-    vararg uriVars: String,
+    urlTemplate: UrlTemplate,
     fn: (mockMvcData: MockMvcData) -> Unit
 ) {
-    val url = UriComponentsBuilder.fromUriString(urlTemplate).buildAndExpand(*uriVars).encode().toUri()
-    val builder = MockMvcRequestBuilders.get(urlTemplate, *uriVars)
+    val builder = MockMvcRequestBuilders.get(urlTemplate.urlString(), *urlTemplate.vars)
     headers?.let { builder.headers(it) }
 
     val resultActions = this.perform(builder)
-    val mock = MockMvcData(url.toString(), resultActions)
+    val mock = MockMvcData(urlTemplate.template, resultActions)
     fn(mock)
 
     headers?.keys?.forEach {

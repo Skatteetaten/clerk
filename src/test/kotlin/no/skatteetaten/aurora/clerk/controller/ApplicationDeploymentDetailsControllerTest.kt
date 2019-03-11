@@ -40,9 +40,9 @@ class ApplicationDeploymentDetailsControllerTest : AbstractSecurityControllerTes
     @WithUserDetails
     fun `should get error if incorrect namespace in token`() {
         mockMvc.get(
-            HttpHeaders().authorization("Bearer <token>"),
-            "error-pods",
-            "/api/pods/{namespace}", "sith"
+            headers = HttpHeaders().authorization("Bearer <token>"),
+            docsIdentifier = "error-pods",
+            urlTemplate = UrlTemplate("/api/pods/{namespace}", "sith")
         ) {
             it.status(UNAUTHORIZED)
                 .responseJsonPath("$.success").equalsValue(false)
@@ -56,9 +56,9 @@ class ApplicationDeploymentDetailsControllerTest : AbstractSecurityControllerTes
         given(podService.getPodItems(namespace)).willReturn(listOf(luke, yoda))
 
         mockMvc.get(
-            HttpHeaders().authorization("Bearer <token>"),
-            "list-pods",
-            "/api/pods/{namespace}", namespace
+            headers = HttpHeaders().authorization("Bearer <token>"),
+            docsIdentifier = "list-pods",
+            urlTemplate = UrlTemplate("/api/pods/{namespace}", namespace)
         ) {
             it.status(OK)
                 .responseJsonPath("$.items[0]").equalsObject(luke)
@@ -72,9 +72,9 @@ class ApplicationDeploymentDetailsControllerTest : AbstractSecurityControllerTes
         given(podService.getPodItems(namespace, name)).willReturn(listOf(luke))
 
         mockMvc.get(
-            HttpHeaders().authorization("Bearer <token>"),
-            "app-pods",
-            "/api/pods/{namespace}?applicationName=$name", namespace
+            headers = HttpHeaders().authorization("Bearer <token>"),
+            docsIdentifier = "app-pods",
+            urlTemplate = UrlTemplate("/api/pods/{namespace}?applicationName=$name", namespace)
         ) {
             it.status(OK).responseJsonPath("$.items[0]").equalsObject(luke)
         }
