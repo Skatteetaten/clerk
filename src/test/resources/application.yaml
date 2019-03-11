@@ -16,5 +16,11 @@ spring:
     name: clerk
 
 
+clerk.openshift.tokenLocation: /tmp/reader-token
+
 # INFO log enable to view the resolved version of the stubs artifact
 logging.level.org.springframework.cloud.contract.stubrunner.AetherStubDownloader: INFO
+
+management:
+    server:
+        port: 0

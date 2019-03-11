@@ -30,7 +30,8 @@ class WebSecurityConfig(
             .addFilter(requestHeaderAuthenticationFilter())
             .authorizeRequests()
             .requestMatchers(forPort(managementPort)).permitAll()
-            .anyRequest().authenticated()
+            .antMatchers("/api/**").authenticated()
+            .anyRequest().permitAll()
     }
 
     private fun forPort(port: Int) = RequestMatcher { request: HttpServletRequest -> port == request.localPort }

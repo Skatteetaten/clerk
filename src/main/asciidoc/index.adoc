@@ -1,0 +1,110 @@
+= Clerk
+Aurora Openshift Paas <utvpaas@skatteetaten.no>
+{version}
+:doctype: book
+:icons: font
+:toc: left
+:toclevels: 3
+:sectlinks:
+
+[introduction]
+== Introduction
+
+This documents describes the api of Clerk, an proxy to get information from the Kubernetes/OpenShift cluster.
+
+Operations supported for now :
+
+ - fetch a list of pods in your own namespace, optionally filtered on name of the application
+
+[resources]
+
+== Authorization
+Clerk required a Authorization Bearer token that is the serviceAccount token your application is running in. An application
+is then permitted to perform operations in its own namespace.
+
+In order to get this token in a running application in your cluster you can read the file
+``/var/run/secrets/kubernetes.io/serviceaccount/token``
+
+=== Local testing
+
+To test out clerk locally you need to fetch the token for the namespace you want to test against.
+
+
+Run the following invocation to obtain the token:
+
+``oc project $namespace && oc get sa default -o json | jq -r ".secrets[].name" | grep -v docker | xargs -i oc get secret {} -o json | jq --arg name "token" '.data[$name]' -r | base64 -d > /tmp/clerk-token``
+
+Where $namespace is the name of the namespace you want to fetch pods in.
+
+Then read ``/tmp/clerk-token`` in your local profile
+
+== Resources
+
+=== Pods
+List out pods for all applications in a namespace
+
+include::{snippets}/list-pods/http-request.adoc[]
+
+Httpie:
+include::{snippets}/list-pods/httpie-request.adoc[]
+
+Curl:
+include::{snippets}/list-pods/curl-request.adoc[]
+
+Response:
+include::{snippets}/list-pods/http-response.adoc[]
+
+If you try to use clerk with an invalid token you will get an 401 Unauthorized:
+include::{snippets}/error-pods/http-response.adoc[]
+
+==== Filter on application
+It is also possible to filter the pods on applicationName
+include::{snippets}/app-pods/http-request.adoc[]
+include::{snippets}/app-pods/http-response.adoc[]
+
+
+[[overview]]
+== Terms
+
+[[overview-http-verbs]]
+=== HTTP verbs
+The API tries to follow standard HTTP and ReST conventions in how it uses HTTP verbs.
+|===
+| Verb | Usage
+
+| `GET`
+| Used for fetching resources. Idempotent.
+
+| `POST`
+| Used for creating new resources.
+
+| `PUT`
+| Used for updating existing resources. Only full updates (no patches). Idempotent.
+
+| `DELETE`
+| Used for deleting existing resources. Idempotent.
+|===
+
+[[overview-http-status-codes]]
+=== HTTP status codes
+The API tries to follow standard HTTP and ReST conventions in how it uses HTTP status codes.
+
+|===
+| Status code | Usage
+
+| `200 OK`
+| Standard response for successful HTTP requests. The response payload will vary depending on the endpoint used.
+
+| `204 No Content`
+| The request was successfully processed but did not return any response.
+
+| `400 Bad Request`
+| The request cannot be processed because for client side error (illegal argument or request).
+
+| `404 Not Found`
+| The requested resource count not be found.
+|===
+
+
+
+:leveloffset: +2

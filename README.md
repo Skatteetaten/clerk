@@ -5,3 +5,20 @@ Clerk wraps the Kuberntes/OpenShift API and allows an application to perform a l
 
 The component is named after Clerk from the TV-show Fraggle Rock (https://muppet.fandom.com/wiki/Clerk_Fraggle).
 
+## Setup
+
+Clerk requires java 11
+
+In order to use this project you must set repositories in your `~/.gradle/init.gradle` file
+
+    allprojects {
+        ext.repos= {
+            maven { url "http://aurora/nexus/content/groups/public" }
+            mavenCentral()
+        }
+        repositories repos
+        buildscript {
+         repositories repos
+        }
+    }
+

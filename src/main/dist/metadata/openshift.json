@@ -2,12 +2,12 @@
   "docker": {
     "maintainer": "Aurora OpenShift Utvikling <utvpaas@skatteetaten.no>",
     "labels": {
-      "io.k8s.description": "Gillis checks for STS certs that are about to expire and updates them via Boober",
+      "io.k8s.description": "Clerk proxy OpenShift api since a running pod does not have permission",
       "io.openshift.tags": "openshift,springboot,kotlin"
     }
   },
   "java": {
-    "mainClass": "no.skatteetaten.aurora.clerk.Main",
+    "mainClass": "no.skatteetaten.aurora.clerk.MainKt",
     "jvmOpts": "-Dspring.profiles.active=openshift",
     "applicationArgs": "--logging.config=${LOGBACK_FILE}"
   }
