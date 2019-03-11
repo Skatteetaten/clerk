@@ -1,6 +1,6 @@
 # User-specific stuff
 .idea
-gilis.iml
+clerk.iml
 
 # CMake
 cmake-build-debug/

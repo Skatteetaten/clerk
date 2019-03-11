@@ -20,7 +20,9 @@ plugins {
     id("com.github.ben-manes.versions") version "0.21.0"
     id("se.patrikerdes.use-latest-versions") version "0.2.9"
 
+    id("no.skatteetaten.gradle.aurora") version "2.0.2"
     id("no.skatteetaten.gradle.aurora") version "2.0.0"
+
 }
 
 apply(plugin = "spring-cloud-contract")
@@ -33,8 +35,6 @@ dependencies {
 
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-web")
-    testImplementation("org.springframework.cloud:spring-cloud-starter-contract-verifier")
-    testImplementation("org.springframework.restdocs:spring-restdocs-mockmvc")
     testImplementation("org.springframework.security:spring-security-test")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
 
@@ -42,5 +42,3 @@ dependencies {
     testImplementation("com.willowtreeapps.assertk:assertk-jvm:0.13")
     testImplementation("com.nhaarman:mockito-kotlin:1.6.0")
 }
-
-tasks.findByPath("compileTestGroovy")?.enabled = false
