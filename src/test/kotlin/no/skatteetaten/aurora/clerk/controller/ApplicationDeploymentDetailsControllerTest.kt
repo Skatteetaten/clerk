@@ -3,6 +3,12 @@ package no.skatteetaten.aurora.clerk.controller
 import no.skatteetaten.aurora.clerk.controller.security.BearerAuthenticationManager
 import no.skatteetaten.aurora.clerk.service.PodService
 import no.skatteetaten.aurora.clerk.service.openshift.token.UserDetailsProvider
+import no.skatteetaten.aurora.mockmvc.extensions.ExactPath
+import no.skatteetaten.aurora.mockmvc.extensions.PathTemplate
+import no.skatteetaten.aurora.mockmvc.extensions.authorization
+import no.skatteetaten.aurora.mockmvc.extensions.get
+import no.skatteetaten.aurora.mockmvc.extensions.responseJsonPath
+import no.skatteetaten.aurora.mockmvc.extensions.status
 import org.junit.jupiter.api.Test
 import org.mockito.BDDMockito.given
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs
@@ -42,7 +48,7 @@ class ApplicationDeploymentDetailsControllerTest : AbstractSecurityControllerTes
         mockMvc.get(
             headers = HttpHeaders().authorization("Bearer <token>"),
             docsIdentifier = "error-pods",
-            urlTemplate = UrlTemplate("/api/pods/{namespace}", "sith")
+            pathBuilder = ExactPath("/api/pods/sith")
         ) {
             it.status(UNAUTHORIZED)
                 .responseJsonPath("$.success").equalsValue(false)
@@ -58,7 +64,7 @@ class ApplicationDeploymentDetailsControllerTest : AbstractSecurityControllerTes
         mockMvc.get(
             headers = HttpHeaders().authorization("Bearer <token>"),
             docsIdentifier = "list-pods",
-            urlTemplate = UrlTemplate("/api/pods/{namespace}", namespace)
+            pathBuilder = PathTemplate("/api/pods/{namespace}", namespace)
         ) {
             it.status(OK)
                 .responseJsonPath("$.items[0]").equalsObject(luke)
@@ -74,7 +80,7 @@ class ApplicationDeploymentDetailsControllerTest : AbstractSecurityControllerTes
         mockMvc.get(
             headers = HttpHeaders().authorization("Bearer <token>"),
             docsIdentifier = "app-pods",
-            urlTemplate = UrlTemplate("/api/pods/{namespace}?applicationName=$name", namespace)
+            pathBuilder = PathTemplate("/api/pods/{namespace}?applicationName=$name", namespace)
         ) {
             it.status(OK).responseJsonPath("$.items[0]").equalsObject(luke)
         }
