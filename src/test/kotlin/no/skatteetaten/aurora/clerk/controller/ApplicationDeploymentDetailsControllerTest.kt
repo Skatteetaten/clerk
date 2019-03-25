@@ -62,7 +62,6 @@ class ApplicationDeploymentDetailsControllerTest : AbstractSecurityControllerTes
 
         mockMvc.get(
             headers = HttpHeaders().authorization("Bearer <token>"),
-            docsIdentifier = "list-pods",
             path = Path("/api/pods/{namespace}", namespace)
         ) {
             statusIsOk()
@@ -78,7 +77,6 @@ class ApplicationDeploymentDetailsControllerTest : AbstractSecurityControllerTes
 
         mockMvc.get(
             headers = HttpHeaders().authorization("Bearer <token>"),
-            docsIdentifier = "app-pods",
             path = Path("/api/pods/{namespace}?applicationName=$name", namespace)
         ) {
             statusIsOk().responseJsonPath("$.items[0]").equalsObject(luke)
