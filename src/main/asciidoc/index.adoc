@@ -43,24 +43,24 @@ Then read ``/tmp/clerk-token`` in your local profile
 === Pods
 List out pods for all applications in a namespace
 
-include::{snippets}/list-pods/http-request.adoc[]
+include::{snippets}/get-api-pods-namespace/http-request.adoc[]
 
 Httpie:
-include::{snippets}/list-pods/httpie-request.adoc[]
+include::{snippets}/get-api-pods-namespace/httpie-request.adoc[]
 
 Curl:
-include::{snippets}/list-pods/curl-request.adoc[]
+include::{snippets}/get-api-pods-namespace/curl-request.adoc[]
 
 Response:
-include::{snippets}/list-pods/http-response.adoc[]
+include::{snippets}/get-api-pods-namespace/http-response.adoc[]
 
 If you try to use clerk with an invalid token you will get an 401 Unauthorized:
 include::{snippets}/error-pods/http-response.adoc[]
 
 ==== Filter on application
 It is also possible to filter the pods on applicationName
-include::{snippets}/app-pods/http-request.adoc[]
-include::{snippets}/app-pods/http-response.adoc[]
+include::{snippets}/get-api-pods-namespace_applicationName=luke/http-request.adoc[]
+include::{snippets}/get-api-pods-namespace_applicationName=luke/http-response.adoc[]
 
 
 [[overview]]
