@@ -13,8 +13,8 @@ In order to use this project you must set repositories in your `~/.gradle/init.g
 
     allprojects {
         ext.repos= {
-            maven { url "http://aurora/nexus/content/groups/public" }
             mavenCentral()
+            jcenter()
         }
         repositories repos
         buildscript {
