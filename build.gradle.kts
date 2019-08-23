@@ -6,7 +6,7 @@ plugins {
     id("org.sonarqube") version "2.7.1"
 
     id("org.springframework.boot") version "2.1.7.RELEASE"
-    id("org.asciidoctor.convert") version "1.6.0"
+    id("org.asciidoctor.convert") version "2.3.0"
 
     id("com.gorylenko.gradle-git-properties") version "2.0.0"
     id("com.github.ben-manes.versions") version "0.22.0"
