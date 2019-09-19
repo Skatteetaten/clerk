@@ -15,6 +15,8 @@ plugins {
     id("no.skatteetaten.gradle.aurora") version "2.4.2"
 }
 
+extra["jackson-bom.version"] = "2.10.0.pr2"
+
 dependencies {
     implementation("io.fabric8:openshift-client:4.5.1")
     testImplementation("io.fabric8:openshift-server-mock:4.5.1")
