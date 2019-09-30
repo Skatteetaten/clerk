@@ -25,10 +25,9 @@ is then permitted to perform operations in its own namespace.
 In order to get this token in a running application in your cluster you can read the file
 ``/var/run/secrets/kubernetes.io/serviceaccount/token``
 
-=== Local testing
+== Local testing
 
 To test out clerk locally you need to fetch the token for the namespace you want to test against.
-
 
 Run the following invocation to obtain the token:
 

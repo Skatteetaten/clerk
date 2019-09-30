@@ -8,11 +8,11 @@ plugins {
     id("org.springframework.boot") version "2.1.8.RELEASE"
     id("org.asciidoctor.convert") version "2.3.0"
 
-    id("com.gorylenko.gradle-git-properties") version "2.1.0"
+    id("com.gorylenko.gradle-git-properties") version "2.2.0"
     id("com.github.ben-manes.versions") version "0.25.0"
     id("se.patrikerdes.use-latest-versions") version "0.2.12"
 
-    id("no.skatteetaten.gradle.aurora") version "2.4.2"
+    id("no.skatteetaten.gradle.aurora") version "3.1.0"
 }
 
 extra["jackson-bom.version"] = "2.10.0.pr3"
@@ -21,7 +21,7 @@ dependencies {
     // for openshift aurora client
     implementation("com.fkorotkov:kubernetes-dsl:2.2")
     implementation("org.springframework.boot:spring-boot-starter-webflux")
-    implementation("io.projectreactor.addons:reactor-extra:3.2.3.RELEASE")
+    implementation("io.projectreactor.addons:reactor-extra:3.3.0.RELEASE")
 
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-web")
