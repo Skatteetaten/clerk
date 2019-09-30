@@ -2,6 +2,9 @@ package no.skatteetaten.aurora.clerk.service
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo
+import assertk.assertions.isFailure
+import assertk.assertions.isInstanceOf
+import assertk.assertions.support.fail
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import io.mockk.every
 import io.mockk.mockk
@@ -9,6 +12,7 @@ import no.skatteetaten.aurora.clerk.controller.PodItem
 import no.skatteetaten.aurora.clerk.controller.ScaleCommand
 import no.skatteetaten.aurora.mockmvc.extensions.mockwebserver.execute
 import org.junit.jupiter.api.Test
+import org.springframework.web.reactive.function.client.WebClientResponseException
 import java.time.Instant
 
 class DeploymentConfigServiceTest : AbstractOpenShiftServerTest() {
@@ -36,6 +40,16 @@ class DeploymentConfigServiceTest : AbstractOpenShiftServerTest() {
         server.execute(response) {
             val result = dcService.scale(command, namespace, 100)
             assertThat(result.pods.size).isEqualTo(1)
+        }
+    }
+
+    @Test
+    fun `scale single item fails http communication`() {
+
+        server.execute(404 to "not found") {
+            assertThat {
+                dcService.scale(command, namespace, 100)
+            }.isFailure().isInstanceOf(WebClientResponseException.NotFound::class)
         }
     }
 }

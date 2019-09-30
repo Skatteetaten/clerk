@@ -19,6 +19,8 @@ import org.springframework.boot.test.autoconfigure.web.client.AutoConfigureWebCl
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.http.HttpHeaders
+import org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR
+import org.springframework.http.HttpStatus.SERVICE_UNAVAILABLE
 import org.springframework.http.HttpStatus.UNAUTHORIZED
 import org.springframework.security.test.context.support.WithUserDetails
 import java.time.Instant
@@ -98,7 +100,7 @@ class ApplicationControllerTest : AbstractSecurityControllerTest() {
             result = null,
             pods = listOf(luke)
         )
-        given(dcService.scale(command, namespace, 100)).willReturn(scaleResult)
+        given(dcService.scale(command, namespace, 500)).willReturn(scaleResult)
 
         mockMvc.put(
             headers = HttpHeaders().authorization("Bearer <token>").contentTypeJson(),
@@ -106,6 +108,24 @@ class ApplicationControllerTest : AbstractSecurityControllerTest() {
             body = command
         ) {
             statusIsOk().responseJsonPath("$.items[0].pods[0]").equalsObject(luke)
+        }
+    }
+
+    @Test
+    @WithUserDetails
+    fun `scale endpoint handle errors`(){
+
+        val command = ScaleCommand(name = name, replicas = 1)
+        given(dcService.scale(command, namespace, 500)).willThrow(RuntimeException("could not find dc"))
+
+        mockMvc.put(
+            headers = HttpHeaders().authorization("Bearer <token>").contentTypeJson(),
+            path = Path("/api/scale/{namespace}", namespace),
+            body = command
+        ) {
+            status(INTERNAL_SERVER_ERROR)
+                .responseJsonPath("$.success").equalsValue(false)
+                .responseJsonPath("$.message").equalsValue("could not find dc")
         }
     }
 }

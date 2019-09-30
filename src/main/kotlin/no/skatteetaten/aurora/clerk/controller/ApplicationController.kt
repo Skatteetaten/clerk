@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.reactive.function.client.WebClientException
 
 private val logger = KotlinLogging.logger {}
 
@@ -36,11 +37,18 @@ class ApplicationController(
     fun scale(
         @PathVariable namespace: String,
         @RequestParam("sleep", defaultValue = "500") sleep: Long,
-        @RequestBody body: ScaleCommand
+        @RequestBody command: ScaleCommand
     ): ClerkResponse<ScaleResult> {
         validateUser(namespace)
-        val scaleResult = deploymentConfigService.scale(body, namespace, sleep)
-        return ClerkResponse(items = listOf(scaleResult), message = "Scaled applications in namespace=$namespace")
+        try {
+            val scaleResult = deploymentConfigService.scale(command, namespace, sleep)
+            return ClerkResponse(items = listOf(scaleResult), message = "Scaled applications in namespace=$namespace")
+        } catch (e: WebClientException) {
+            throw RuntimeException(
+                "Could not scale dc with name=${command.name} in namespace=${namespace} causeMessage=${e.message}",
+                e
+            )
+        }
     }
 
     @GetMapping("/pods/{namespace}")
@@ -55,10 +63,7 @@ class ApplicationController(
         val namePart = applicationName?.let { "name=$applicationName" } ?: ""
         val message1 = "Fetched count=${podItems.count()} pods for namespace=$namespace $namePart"
         logger.info(message1)
-        return ClerkResponse(
-            items = podItems,
-            message = message1
-        )
+        return ClerkResponse( items = podItems, message = message1 )
     }
 
     private fun validateUser(namespace: String) {
