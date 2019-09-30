@@ -42,6 +42,7 @@ class ApplicationController(
         validateUser(namespace)
         try {
             val scaleResult = deploymentConfigService.scale(command, namespace, sleep)
+            logger.info("Scaling dc=${command.name} to replicas=${command.replicas} in namespace=$namespace")
             return ClerkResponse(items = listOf(scaleResult), message = "Scaled applications in namespace=$namespace")
         } catch (e: WebClientException) {
             throw RuntimeException(
@@ -56,14 +57,13 @@ class ApplicationController(
         @PathVariable namespace: String,
         @RequestParam("applicationName", required = false) applicationName: String?
     ): ClerkResponse<PodItem> {
-
         validateUser(namespace)
         val podItems = podService.getPodItems(namespace, applicationName)
 
         val namePart = applicationName?.let { "name=$applicationName" } ?: ""
         val message1 = "Fetched count=${podItems.count()} pods for namespace=$namespace $namePart"
         logger.info(message1)
-        return ClerkResponse( items = podItems, message = message1 )
+        return ClerkResponse(items = podItems, message = message1)
     }
 
     private fun validateUser(namespace: String) {
