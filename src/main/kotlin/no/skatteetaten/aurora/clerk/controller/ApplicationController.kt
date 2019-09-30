@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
-import org.springframework.web.reactive.function.client.WebClientException
+import org.springframework.web.reactive.function.client.WebClientResponseException
 
 private val logger = KotlinLogging.logger {}
 
@@ -44,9 +44,9 @@ class ApplicationController(
             val scaleResult = deploymentConfigService.scale(command, namespace, sleep)
             logger.info("Scaling dc=${command.name} to replicas=${command.replicas} in namespace=$namespace")
             return ClerkResponse(items = listOf(scaleResult), message = "Scaled applications in namespace=$namespace")
-        } catch (e: WebClientException) {
+        } catch (e: WebClientResponseException) {
             throw RuntimeException(
-                "Could not scale dc with name=${command.name} in namespace=$namespace causeMessage=${e.message}",
+                "Could not scale dc with name=${command.name} in namespace=$namespace causeStatusCode=${e.statusCode} causeMessage=${e.message}",
                 e
             )
         }

@@ -22,6 +22,7 @@ import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR
 import org.springframework.http.HttpStatus.UNAUTHORIZED
 import org.springframework.security.test.context.support.WithUserDetails
+import org.springframework.web.reactive.function.client.WebClientResponseException
 import java.time.Instant
 
 @WebMvcTest(
@@ -115,7 +116,9 @@ class ApplicationControllerTest : AbstractSecurityControllerTest() {
     fun `scale endpoint handle errors`() {
 
         val command = ScaleCommand(name = name, replicas = 1)
-        given(dcService.scale(command, namespace, 500)).willThrow(RuntimeException("could not find dc"))
+        given(dcService.scale(command, namespace, 500)).willThrow(
+            WebClientResponseException.create(404, "Not Found", HttpHeaders(), "".toByteArray(), Charsets.UTF_8)
+        )
 
         mockMvc.put(
             headers = HttpHeaders().authorization("Bearer <token>").contentTypeJson(),
@@ -124,7 +127,7 @@ class ApplicationControllerTest : AbstractSecurityControllerTest() {
         ) {
             status(INTERNAL_SERVER_ERROR)
                 .responseJsonPath("$.success").equalsValue(false)
-                .responseJsonPath("$.message").equalsValue("could not find dc")
+                .responseJsonPath("$.message").equalsValue("Could not scale dc with name=luke in namespace=jedi-test causeStatusCode=404 NOT_FOUND causeMessage=404 Not Found")
         }
     }
 }
