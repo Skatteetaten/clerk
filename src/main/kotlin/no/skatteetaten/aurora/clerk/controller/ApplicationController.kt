@@ -46,7 +46,7 @@ class ApplicationController(
             return ClerkResponse(items = listOf(scaleResult), message = "Scaled applications in namespace=$namespace")
         } catch (e: WebClientException) {
             throw RuntimeException(
-                "Could not scale dc with name=${command.name} in namespace=${namespace} causeMessage=${e.message}",
+                "Could not scale dc with name=${command.name} in namespace=$namespace causeMessage=${e.message}",
                 e
             )
         }

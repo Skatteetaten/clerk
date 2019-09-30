@@ -1,12 +1,10 @@
 package no.skatteetaten.aurora.clerk.service
 
 import mu.KotlinLogging
-import no.skatteetaten.aurora.clerk.controller.NoSuchResourceException
 import no.skatteetaten.aurora.clerk.controller.ScaleCommand
 import no.skatteetaten.aurora.clerk.controller.ScaleResult
 import no.skatteetaten.aurora.openshift.webclient.OpenShiftClient
 import org.springframework.stereotype.Service
-import org.springframework.web.reactive.function.client.WebClientException
 
 private val logger = KotlinLogging.logger {}
 

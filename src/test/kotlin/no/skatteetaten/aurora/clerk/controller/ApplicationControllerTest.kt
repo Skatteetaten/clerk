@@ -20,7 +20,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR
-import org.springframework.http.HttpStatus.SERVICE_UNAVAILABLE
 import org.springframework.http.HttpStatus.UNAUTHORIZED
 import org.springframework.security.test.context.support.WithUserDetails
 import java.time.Instant
@@ -113,7 +112,7 @@ class ApplicationControllerTest : AbstractSecurityControllerTest() {
 
     @Test
     @WithUserDetails
-    fun `scale endpoint handle errors`(){
+    fun `scale endpoint handle errors`() {
 
         val command = ScaleCommand(name = name, replicas = 1)
         given(dcService.scale(command, namespace, 500)).willThrow(RuntimeException("could not find dc"))
