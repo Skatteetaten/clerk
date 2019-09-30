@@ -58,6 +58,9 @@ include::{snippets}/get-api-pods-namespace/http-response.adoc[]
 If you try to use clerk with an invalid token you will get an 401 Unauthorized:
 include::{snippets}/error-pods/http-response.adoc[]
 
+If there is an error communicating with the underlying infrastructure you can get a 500 internal server error like this
+include::{snippets}/scale-error/http-response.adoc[]
+
 === Pods
 List out pods for all applications in a namespace
 

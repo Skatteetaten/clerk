@@ -122,6 +122,7 @@ class ApplicationControllerTest : AbstractSecurityControllerTest() {
 
         mockMvc.put(
             headers = HttpHeaders().authorization("Bearer <token>").contentTypeJson(),
+            docsIdentifier = "scale-error",
             path = Path("/api/scale/{namespace}", namespace),
             body = command
         ) {
