@@ -41,7 +41,7 @@ Then read ``/tmp/clerk-token`` in your local profile
 
 
 === Scale
-Scale an deploymentConfig to a given replicas
+Scale an deploymentConfig to a given replica count
 
 include::{snippets}/put-api-scale-namespace/http-request.adoc[]
 
