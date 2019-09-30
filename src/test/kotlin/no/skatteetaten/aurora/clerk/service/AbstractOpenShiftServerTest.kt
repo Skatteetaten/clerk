@@ -1,20 +1,14 @@
 package no.skatteetaten.aurora.clerk.service
 
-import io.fabric8.openshift.client.server.mock.OpenShiftServer
-import org.junit.jupiter.api.AfterEach
-import org.junit.jupiter.api.BeforeEach
+import no.skatteetaten.aurora.openshift.webclient.OpenShiftClient
+import okhttp3.mockwebserver.MockWebServer
+import org.springframework.web.reactive.function.client.WebClient
 
 open class AbstractOpenShiftServerTest {
 
-    protected val openShiftServer = OpenShiftServer(false, true)
+    val server = MockWebServer()
+    val url = server.url("/")
 
-    @BeforeEach
-    fun setUpOpenShiftServer() {
-        openShiftServer.before()
-    }
-
-    @AfterEach
-    fun tearDownOpenShiftServer() {
-        openShiftServer.after()
-    }
+    val webClient = WebClient.create(url.toString())
+    val openShiftClient = OpenShiftClient(webClient)
 }

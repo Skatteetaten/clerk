@@ -1,11 +1,13 @@
 package no.skatteetaten.aurora.clerk.controller
 
 import no.skatteetaten.aurora.clerk.controller.security.BearerAuthenticationManager
+import no.skatteetaten.aurora.clerk.service.DeploymentConfigService
 import no.skatteetaten.aurora.clerk.service.PodService
 import no.skatteetaten.aurora.clerk.service.openshift.token.UserDetailsProvider
 import no.skatteetaten.aurora.mockmvc.extensions.Path
 import no.skatteetaten.aurora.mockmvc.extensions.authorization
 import no.skatteetaten.aurora.mockmvc.extensions.get
+import no.skatteetaten.aurora.mockmvc.extensions.put
 import no.skatteetaten.aurora.mockmvc.extensions.responseJsonPath
 import no.skatteetaten.aurora.mockmvc.extensions.status
 import no.skatteetaten.aurora.mockmvc.extensions.statusIsOk
@@ -22,16 +24,18 @@ import java.time.Instant
 
 @WebMvcTest(
     ApplicationController::class,
-    PodResourceAssembler::class,
     UserDetailsProvider::class,
     BearerAuthenticationManager::class
 )
 @AutoConfigureWebClient
 @AutoConfigureRestDocs
-class ApplicationDeploymentDetailsControllerTest : AbstractSecurityControllerTest() {
+class ApplicationControllerTest : AbstractSecurityControllerTest() {
 
     @MockBean
     lateinit var podService: PodService
+
+    @MockBean
+    lateinit var dcService: DeploymentConfigService
 
     private val name = "luke"
     private val started = Instant.now().toString()
@@ -78,6 +82,28 @@ class ApplicationDeploymentDetailsControllerTest : AbstractSecurityControllerTes
         mockMvc.get(
             headers = HttpHeaders().authorization("Bearer <token>"),
             path = Path("/api/pods/{namespace}?applicationName=$name", namespace)
+        ) {
+            statusIsOk().responseJsonPath("$.items[0]").equalsObject(luke)
+        }
+    }
+
+    @Test
+    @WithUserDetails
+    fun `should scale deployment config in namespace`() {
+
+        val command = ScaleCommand(name = name, replicas = 1)
+        val scaleResult = ScaleResult(
+            command = command,
+            result = null,
+            pods = listOf(luke)
+        )
+        val scalePayload = ScalePayload(apps = listOf(command))
+        given(dcService.scale(scalePayload, namespace, 100)).willReturn(listOf(scaleResult))
+
+        mockMvc.put(
+            headers = HttpHeaders().authorization("Bearer <token>"),
+            path = Path("/api/scale/{namespace}", namespace),
+            body = scalePayload
         ) {
             statusIsOk().responseJsonPath("$.items[0]").equalsObject(luke)
         }

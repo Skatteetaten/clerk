@@ -27,3 +27,20 @@ We use a local repository for distributionUrl in our gradle-wrapper.properties, 
     <...>
     distributionUrl=https\://services.gradle.org/distributions/gradle-<version>-bin.zip
     <...>
+
+## Manual testing
+
+In the src/main/http folder create the file `rest-client.env.json` on the following form
+
+    {
+      "local":{
+        "apiUrl":"http://localhost:8080",
+        "token": "<token from sa in namespace you want to test against>"
+      },
+      "utv": {
+        "apiUrl": "https://clerk.url.in.your.cluster",
+        "token": "<token from sa in namespace you want to test against>"
+      }
+    }
+    
+You can then run the different calls in the http call with either of these proilfes

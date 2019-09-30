@@ -18,9 +18,10 @@ plugins {
 extra["jackson-bom.version"] = "2.10.0.pr3"
 
 dependencies {
-    implementation("io.fabric8:openshift-client:4.5.1")
-    testImplementation("io.fabric8:openshift-server-mock:4.5.1")
-    testImplementation("com.fkorotkov:kubernetes-dsl:2.2")
+    //for openshift aurora client
+    implementation("com.fkorotkov:kubernetes-dsl:2.2")
+    implementation("org.springframework.boot:spring-boot-starter-webflux")
+    implementation("io.projectreactor.addons:reactor-extra:3.2.3.RELEASE")
 
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-web")
