@@ -22,7 +22,7 @@ enum class OpenShiftApiGroup(
 ) : ApiGroup {
     APPLICATIONDEPLOYMENT("skatteetaten.no/v1"),
     DEPLOYMENTCONFIG("apps"),
-    DEPLOYMENTCONFIGSCALE("apps", "/scale", alternateName="deploymentconfig"),
+    DEPLOYMENTCONFIGSCALE("apps", "/scale", alternateName = "deploymentconfig"),
     DEPLOYMENTREQUEST("apps", "/instantiate", alternateName = "deploymentconfig"),
     ROUTE("route"),
     USER("user", "/~"),
@@ -44,7 +44,7 @@ enum class OpenShiftApiGroup(
             "kind" to "${(alternateName ?: this.name).toLowerCase()}s",
             "name" to name
         )
-        logger.debug{ "uri template=$uriTemplate variables=$variables"}
+        logger.debug { "uri template=$uriTemplate variables=$variables" }
         return OpenShiftUri(
             uriTemplate, variables
         )

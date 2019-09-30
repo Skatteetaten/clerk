@@ -10,7 +10,6 @@ import io.fabric8.kubernetes.api.model.PodList
 import io.fabric8.kubernetes.api.model.ReplicationController
 import io.fabric8.kubernetes.api.model.ServiceList
 import io.fabric8.kubernetes.api.model.authorization.SelfSubjectAccessReview
-import io.fabric8.kubernetes.api.model.extensions.Scale
 import io.fabric8.openshift.api.model.DeploymentConfig
 import io.fabric8.openshift.api.model.ImageStreamTag
 import io.fabric8.openshift.api.model.Project
@@ -45,22 +44,22 @@ private val logger = KotlinLogging.logger {}
 
 abstract class AbstractOpenShiftClient(private val webClient: WebClient, private val token: String? = null) {
 
-    fun scale(ns:String, n:String, count:Int): Mono<JsonNode>{
+    fun scale(ns: String, n: String, count: Int): Mono<JsonNode> {
 
-        val scale=newScale {
+        val scale = newScale {
             metadata {
-                namespace=ns
-                name=n
+                namespace = ns
+                name = n
             }
             spec {
-                replicas= count
+                replicas = count
             }
         }
         val uri = OpenShiftApiGroup.DEPLOYMENTCONFIGSCALE.uri(ns, n)
         return webClient
             .put()
             .uri(uri.template, uri.variables)
-            .body( BodyInserters.fromObject(scale))
+            .body(BodyInserters.fromObject(scale))
             .bearerToken(token)
             .retrieve()
             .bodyToMono()

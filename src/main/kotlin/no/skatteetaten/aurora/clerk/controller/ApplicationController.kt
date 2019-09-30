@@ -1,6 +1,5 @@
 package no.skatteetaten.aurora.clerk.controller
 
-import com.fasterxml.jackson.databind.JsonNode
 import mu.KotlinLogging
 import no.skatteetaten.aurora.clerk.service.DeploymentConfigService
 import no.skatteetaten.aurora.clerk.service.PodService
@@ -40,10 +39,8 @@ class ApplicationController(
         @RequestBody body: ScalePayload
     ): ClerkResponse<ScaleResult> {
         validateUser(namespace)
-
         val scaleResult = deploymentConfigService.scale(body, namespace, sleep)
-
-        return ClerkResponse(items = scaleResult, message = "Scaled applications in namespace=${namespace}")
+        return ClerkResponse(items = scaleResult, message = "Scaled applications in namespace=$namespace")
     }
 
     @GetMapping("/pods/{namespace}")
@@ -71,5 +68,3 @@ class ApplicationController(
         }
     }
 }
-
-

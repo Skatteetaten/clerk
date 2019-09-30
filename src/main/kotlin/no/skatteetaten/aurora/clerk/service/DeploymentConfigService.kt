@@ -1,7 +1,6 @@
 package no.skatteetaten.aurora.clerk.service
 
 import mu.KotlinLogging
-import no.skatteetaten.aurora.clerk.controller.ApplicationController
 import no.skatteetaten.aurora.clerk.controller.ScalePayload
 import no.skatteetaten.aurora.clerk.controller.ScaleResult
 import no.skatteetaten.aurora.openshift.webclient.OpenShiftClient

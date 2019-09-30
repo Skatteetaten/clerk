@@ -9,10 +9,8 @@ import no.skatteetaten.aurora.filter.logging.AuroraHeaderFilter
 import no.skatteetaten.aurora.filter.logging.RequestKorrelasjon
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.beans.factory.annotation.Value
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.context.annotation.Primary
 import org.springframework.context.annotation.Profile
 import org.springframework.core.io.Resource
 import org.springframework.http.HttpHeaders
@@ -38,7 +36,7 @@ private val logger = KotlinLogging.logger {}
 class OpenShiftClientConfig(@Value("\${spring.application.name}") val applicationName: String) {
 
     @Bean
-    fun openShiftClient( @Qualifier("openshift") webClient: WebClient) = OpenShiftClient(webClient)
+    fun openShiftClient(@Qualifier("openshift") webClient: WebClient) = OpenShiftClient(webClient)
 
     @Qualifier("openshift")
     @Bean
@@ -68,7 +66,7 @@ class OpenShiftClientConfig(@Value("\${spring.application.name}") val applicatio
         @Value("\${integrations.openshift.readTimeout:5000}") readTimeout: Long,
         @Value("\${integrations.openshift.writeTimeout:5000}") writeTimeout: Long,
         @Value("\${integrations.openshift.connectTimeout:5000}") connectTimeout: Int,
-        @Qualifier("openshift")  trustStore: KeyStore?
+        @Qualifier("openshift") trustStore: KeyStore?
     ): TcpClient {
         val trustFactory = TrustManagerFactory.getInstance("X509")
         trustFactory.init(trustStore)
