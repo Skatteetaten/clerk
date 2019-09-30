@@ -7,7 +7,6 @@ import io.mockk.every
 import io.mockk.mockk
 import no.skatteetaten.aurora.clerk.controller.PodItem
 import no.skatteetaten.aurora.clerk.controller.ScaleCommand
-import no.skatteetaten.aurora.clerk.controller.ScalePayload
 import no.skatteetaten.aurora.mockmvc.extensions.mockwebserver.execute
 import org.junit.jupiter.api.Test
 import java.time.Instant
@@ -24,7 +23,6 @@ class DeploymentConfigServiceTest : AbstractOpenShiftServerTest() {
     private val luke = PodItem("$name-1", name, started, "Running")
     val command = ScaleCommand(name = name, replicas = 1)
 
-    val scalePayload = ScalePayload(apps = listOf(command))
     @Test
     fun `scale single item`() {
 
@@ -36,9 +34,8 @@ class DeploymentConfigServiceTest : AbstractOpenShiftServerTest() {
         val response = jacksonObjectMapper().readTree(jsonResponse)
 
         server.execute(response) {
-            val result = dcService.scale(scalePayload, namespace, 100)
-            assertThat(result.size).isEqualTo(1)
-            assertThat(result[0].pods.size).isEqualTo(1)
+            val result = dcService.scale(command, namespace, 100)
+            assertThat(result.pods.size).isEqualTo(1)
         }
     }
 }

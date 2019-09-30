@@ -3,12 +3,8 @@ Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
-  "apps": [
-    {
-      "name": "whoami",
-      "replicas" : 5
-    }
-  ]
+  "name": "whoami",
+  "replicas": 5
 }
 
 ###

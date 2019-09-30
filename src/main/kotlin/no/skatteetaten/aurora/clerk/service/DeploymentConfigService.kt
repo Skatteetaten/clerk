@@ -1,7 +1,7 @@
 package no.skatteetaten.aurora.clerk.service
 
 import mu.KotlinLogging
-import no.skatteetaten.aurora.clerk.controller.ScalePayload
+import no.skatteetaten.aurora.clerk.controller.ScaleCommand
 import no.skatteetaten.aurora.clerk.controller.ScaleResult
 import no.skatteetaten.aurora.openshift.webclient.OpenShiftClient
 import org.springframework.stereotype.Service
@@ -15,20 +15,19 @@ class DeploymentConfigService(
 ) {
 
     fun scale(
-        body: ScalePayload,
+        command: ScaleCommand,
         namespace: String,
         sleep: Long
-    ): List<ScaleResult> {
+    ): ScaleResult {
         logger.debug("scaling all pods")
-        val scaled = body.apps.associateWith { client.serviceAccount().scale(namespace, it.name, it.replicas).block() }
+
+        val result = client.serviceAccount().scale(namespace, command.name, command.replicas).block()
 
         logger.debug("sleeping=${sleep}ms")
         Thread.sleep(sleep)
-        val scaleResult = scaled.map {
-            val pods = podService.getPodItems(namespace, it.key.name)
-            ScaleResult(it.key, it.value, pods)
-        }
-        logger.debug("found pods")
-        return scaleResult
+
+        val pods = podService.getPodItems(namespace, command.name)
+
+        return ScaleResult(command, result, pods)
     }
 }

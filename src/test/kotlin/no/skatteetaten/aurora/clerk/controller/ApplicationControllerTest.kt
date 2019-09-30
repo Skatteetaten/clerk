@@ -6,6 +6,7 @@ import no.skatteetaten.aurora.clerk.service.PodService
 import no.skatteetaten.aurora.clerk.service.openshift.token.UserDetailsProvider
 import no.skatteetaten.aurora.mockmvc.extensions.Path
 import no.skatteetaten.aurora.mockmvc.extensions.authorization
+import no.skatteetaten.aurora.mockmvc.extensions.contentTypeJson
 import no.skatteetaten.aurora.mockmvc.extensions.get
 import no.skatteetaten.aurora.mockmvc.extensions.put
 import no.skatteetaten.aurora.mockmvc.extensions.responseJsonPath
@@ -97,15 +98,14 @@ class ApplicationControllerTest : AbstractSecurityControllerTest() {
             result = null,
             pods = listOf(luke)
         )
-        val scalePayload = ScalePayload(apps = listOf(command))
-        given(dcService.scale(scalePayload, namespace, 100)).willReturn(listOf(scaleResult))
+        given(dcService.scale(command, namespace, 100)).willReturn(scaleResult)
 
         mockMvc.put(
-            headers = HttpHeaders().authorization("Bearer <token>"),
+            headers = HttpHeaders().authorization("Bearer <token>").contentTypeJson(),
             path = Path("/api/scale/{namespace}", namespace),
-            body = scalePayload
+            body = command
         ) {
-            statusIsOk().responseJsonPath("$.items[0]").equalsObject(luke)
+            statusIsOk().responseJsonPath("$.items[0].pods[0]").equalsObject(luke)
         }
     }
 }

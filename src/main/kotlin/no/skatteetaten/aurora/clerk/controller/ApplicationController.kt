@@ -36,11 +36,11 @@ class ApplicationController(
     fun scale(
         @PathVariable namespace: String,
         @RequestParam("sleep", defaultValue = "500") sleep: Long,
-        @RequestBody body: ScalePayload
+        @RequestBody body: ScaleCommand
     ): ClerkResponse<ScaleResult> {
         validateUser(namespace)
         val scaleResult = deploymentConfigService.scale(body, namespace, sleep)
-        return ClerkResponse(items = scaleResult, message = "Scaled applications in namespace=$namespace")
+        return ClerkResponse(items = listOf(scaleResult), message = "Scaled applications in namespace=$namespace")
     }
 
     @GetMapping("/pods/{namespace}")
