@@ -1,4 +1,4 @@
-PUT {{apiUrl}}/api/scale/demo-m89870?sleep=1000
+PUT {{apiUrl}}/api/scale/demo-m89870?sleep=2000
 Authorization: Bearer {{token}}
 Content-Type: application/json
 
