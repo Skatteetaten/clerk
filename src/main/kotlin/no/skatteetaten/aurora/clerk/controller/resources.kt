@@ -28,7 +28,7 @@ data class ClerkResponse<T>(
 data class PodItem(
     val name: String,
     val applicationName: String?,
-    val startTime: String,
+    val startTime: String?,
     val status: String
 )
 
