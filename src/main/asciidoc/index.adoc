@@ -43,16 +43,16 @@ Then read ``/tmp/clerk-token`` in your local profile
 === Scale
 Scale an deploymentConfig to a given replicas
 
-include::{snippets}/get-api-pods-namespace/http-request.adoc[]
+include::{snippets}/put-api-scale-namespace/http-request.adoc[]
 
 Httpie:
-include::{snippets}/get-api-pods-namespace/httpie-request.adoc[]
+include::{snippets}/put-api-scale-namespace/httpie-request.adoc[]
 
 Curl:
-include::{snippets}/get-api-pods-namespace/curl-request.adoc[]
+include::{snippets}/put-api-scale-namespace/curl-request.adoc[]
 
 Response:
-include::{snippets}/get-api-pods-namespace/http-response.adoc[]
+include::{snippets}/put-api-scale-namespace/http-response.adoc[]
 
 If you try to use clerk with an invalid token you will get an 401 Unauthorized:
 include::{snippets}/error-pods/http-response.adoc[]
