@@ -13,6 +13,10 @@ logging:
                 coyote: WARN
                 velocity: WARN
 
+server:
+    tomcat:
+        use-relative-redirects: true
+
 integrations:
   openshift:
     tokenLocation: file:/var/run/secrets/kubernetes.io/serviceaccount/token
