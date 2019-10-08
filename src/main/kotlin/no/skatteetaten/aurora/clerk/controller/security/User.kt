@@ -10,5 +10,5 @@ class User(
     grantedAuthorities: Collection<GrantedAuthority> = listOf()
 ) : SpringSecurityUser(username, token, true, true, true, true, grantedAuthorities.toList()) {
     val tokenSnippet: String
-        get() = token.substring(0, min(token.length, 5))
+        get() = token.takeLast(5)
 }
