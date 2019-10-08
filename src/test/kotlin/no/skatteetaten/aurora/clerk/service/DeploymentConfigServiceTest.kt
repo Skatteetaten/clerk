@@ -7,12 +7,12 @@ import assertk.assertions.isInstanceOf
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import io.mockk.every
 import io.mockk.mockk
+import java.time.Instant
 import no.skatteetaten.aurora.clerk.controller.PodItem
 import no.skatteetaten.aurora.clerk.controller.ScaleCommand
 import no.skatteetaten.aurora.mockmvc.extensions.mockwebserver.execute
 import org.junit.jupiter.api.Test
 import org.springframework.web.reactive.function.client.WebClientResponseException
-import java.time.Instant
 
 class DeploymentConfigServiceTest : AbstractOpenShiftServerTest() {
 

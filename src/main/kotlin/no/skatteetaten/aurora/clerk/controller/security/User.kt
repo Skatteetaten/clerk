@@ -1,7 +1,6 @@
 package no.skatteetaten.aurora.clerk.controller.security
 
 import org.springframework.security.core.GrantedAuthority
-import kotlin.math.min
 import org.springframework.security.core.userdetails.User as SpringSecurityUser
 
 class User(

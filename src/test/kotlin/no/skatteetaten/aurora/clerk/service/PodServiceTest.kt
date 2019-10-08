@@ -8,10 +8,10 @@ import com.fkorotkov.kubernetes.newPod
 import com.fkorotkov.kubernetes.newPodList
 import com.fkorotkov.kubernetes.status
 import io.fabric8.kubernetes.api.model.Pod
+import java.time.Instant
 import no.skatteetaten.aurora.clerk.controller.PodItem
 import no.skatteetaten.aurora.mockmvc.extensions.mockwebserver.execute
 import org.junit.jupiter.api.Test
-import java.time.Instant
 
 class PodServiceTest : AbstractOpenShiftServerTest() {
 

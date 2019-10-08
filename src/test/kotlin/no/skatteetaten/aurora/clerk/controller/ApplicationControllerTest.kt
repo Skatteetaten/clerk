@@ -1,5 +1,6 @@
 package no.skatteetaten.aurora.clerk.controller
 
+import java.time.Instant
 import no.skatteetaten.aurora.clerk.controller.security.BearerAuthenticationManager
 import no.skatteetaten.aurora.clerk.service.DeploymentConfigService
 import no.skatteetaten.aurora.clerk.service.PodService
@@ -23,7 +24,6 @@ import org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR
 import org.springframework.http.HttpStatus.UNAUTHORIZED
 import org.springframework.security.test.context.support.WithUserDetails
 import org.springframework.web.reactive.function.client.WebClientResponseException
-import java.time.Instant
 
 @WebMvcTest(
     ApplicationController::class,

@@ -18,6 +18,8 @@ import io.fabric8.openshift.api.model.ProjectList
 import io.fabric8.openshift.api.model.Route
 import io.fabric8.openshift.api.model.RouteList
 import io.fabric8.openshift.api.model.User
+import java.net.URI
+import java.time.Duration
 import mu.KotlinLogging
 import no.skatteetaten.aurora.openshift.webclient.KubernetesApiGroup.POD
 import no.skatteetaten.aurora.openshift.webclient.KubernetesApiGroup.REPLICATIONCONTROLLER
@@ -38,8 +40,6 @@ import org.springframework.web.reactive.function.client.body
 import org.springframework.web.reactive.function.client.bodyToMono
 import reactor.core.publisher.Mono
 import reactor.retry.Retry
-import java.net.URI
-import java.time.Duration
 
 private val logger = KotlinLogging.logger {}
 
