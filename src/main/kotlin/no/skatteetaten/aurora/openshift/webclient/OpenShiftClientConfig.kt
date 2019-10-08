@@ -46,6 +46,7 @@ class OpenShiftClientConfig(@Value("\${spring.application.name}") val applicatio
         @Value("\${integrations.openshift.url}") openshiftUrl: String,
         @Value("\${integrations.openshift.tokenLocation:file:/var/run/secrets/kubernetes.io/serviceaccount/token}") token: Resource
     ): WebClient {
+        logger.debug("OpenshiftUrl=$openshiftUrl")
         val b = builder
             .baseUrl(openshiftUrl)
             .defaultHeaders(applicationName)

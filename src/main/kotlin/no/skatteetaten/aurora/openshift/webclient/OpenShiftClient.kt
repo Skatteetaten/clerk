@@ -1,6 +1,7 @@
 package no.skatteetaten.aurora.openshift.webclient
 
 import com.fasterxml.jackson.databind.JsonNode
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fkorotkov.kubernetes.extensions.metadata
 import com.fkorotkov.kubernetes.extensions.newScale
 import com.fkorotkov.kubernetes.extensions.spec
@@ -56,6 +57,7 @@ abstract class AbstractOpenShiftClient(private val webClient: WebClient, private
             }
         }
         val uri = OpenShiftApiGroup.DEPLOYMENTCONFIGSCALE.uri(ns, n)
+        logger.debug("URL=${uri.expand()} body=${jacksonObjectMapper().writeValueAsString(scale)}")
         return webClient
             .put()
             .uri(uri.template, uri.variables)
