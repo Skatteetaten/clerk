@@ -2,6 +2,7 @@ package no.skatteetaten.aurora.clerk.service
 
 import no.skatteetaten.aurora.clerk.controller.PodItem
 import no.skatteetaten.aurora.openshift.webclient.OpenShiftClient
+import no.skatteetaten.aurora.openshift.webclient.retryWithLog
 import org.springframework.stereotype.Service
 
 val deployPodLabel = "openshift.io/deployer-pod-for.name"
@@ -19,7 +20,9 @@ class PodService(val client: OpenShiftClient) {
             mapOf("app" to it)
         } ?: emptyMap()
 
-        return client.serviceAccount().pods(namespace, labelMap = appLabels).map { podList ->
+        return client.serviceAccount().pods(namespace, labelMap = appLabels)
+            .retryWithLog(100L, 2000L)
+            .map { podList ->
             podList.items.filter {
                 val labels = it.metadata.labels
                 !labels.containsKey(deployPodLabel) && !labels.containsKey(buildPodLabel)
