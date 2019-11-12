@@ -4,7 +4,7 @@ spring:
 
 logging:
     level:
-        no.skatteetaten.aurora.clerk: INFO
+        no.skatteetaten.aurora: INFO
         org:
             hibernate: WARN
             springframework: WARN
@@ -13,22 +13,28 @@ logging:
                 coyote: WARN
                 velocity: WARN
 
-clerk:
-    openshift:
-        tokenLocation: /var/run/secrets/kubernetes.io/serviceaccount/token
+server:
+    tomcat:
+        use-relative-redirects: true
+
+integrations:
+  openshift:
+    tokenLocation: file:/var/run/secrets/kubernetes.io/serviceaccount/token
+    url: https://${openshift.cluster}-master.paas.skead.no:8443
+
 ---
 spring:
     profiles: local
 
-clerk:
-    openshift:
-        tokenLocation: /tmp/reader-token
+openshift:
+    cluster: utv
+
+integrations:
+  openshift:
+    tokenLocation: file:/tmp/reader-token
 
 logging:
     pattern:
         console: "%d [%-9.9thread] %highlight(%-5level) %cyan(%logger:%L) %X - %msg %n%rEx{full}"
 
 
----
-spring:
-    profiles: openshift

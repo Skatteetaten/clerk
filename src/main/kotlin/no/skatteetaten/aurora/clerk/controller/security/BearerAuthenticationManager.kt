@@ -1,20 +1,18 @@
 package no.skatteetaten.aurora.clerk.controller.security
 
-import io.fabric8.kubernetes.client.ConfigBuilder
-import io.fabric8.kubernetes.client.KubernetesClientException
-import io.fabric8.openshift.client.DefaultOpenShiftClient
+import java.util.regex.Pattern
 import mu.KotlinLogging
+import no.skatteetaten.aurora.openshift.webclient.OpenShiftClient
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.BadCredentialsException
 import org.springframework.security.core.Authentication
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken
 import org.springframework.stereotype.Component
-import java.util.regex.Pattern
 
 private val logger = KotlinLogging.logger {}
 
 @Component
-class BearerAuthenticationManager : AuthenticationManager {
+class BearerAuthenticationManager(val openShiftClient: OpenShiftClient) : AuthenticationManager {
 
     companion object {
         private val headerPattern: Pattern = Pattern.compile("Bearer\\s+(.*)", Pattern.CASE_INSENSITIVE)
@@ -33,10 +31,9 @@ class BearerAuthenticationManager : AuthenticationManager {
 
         try {
             val token = getBearerTokenFromAuthentication(authentication)
-            val client = DefaultOpenShiftClient(ConfigBuilder().withOauthToken(token).build())
-            val openShiftUser = client.currentUser()
-            return PreAuthenticatedAuthenticationToken(openShiftUser, token)
-        } catch (e: KubernetesClientException) {
+            val user = openShiftClient.userToken(token).user().block() ?: BadCredentialsException("Could not find user")
+            return PreAuthenticatedAuthenticationToken(user, token)
+        } catch (e: Exception) {
             throw BadCredentialsException(e.localizedMessage, e)
         }
     }

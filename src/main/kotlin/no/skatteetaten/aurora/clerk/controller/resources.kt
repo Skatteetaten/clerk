@@ -1,6 +1,7 @@
 package no.skatteetaten.aurora.clerk.controller
 
 import com.fasterxml.jackson.annotation.JsonIgnore
+import com.fasterxml.jackson.databind.JsonNode
 
 data class ClerkFailure(
     @JsonIgnore val error: Throwable? = null
@@ -23,3 +24,25 @@ data class ClerkResponse<T>(
             )
     }
 }
+
+data class PodItem(
+    val name: String,
+    val applicationName: String?,
+    val startTime: String?,
+    val status: String
+)
+
+data class ScaleCommand(
+    val name: String,
+    val replicas: Int
+)
+
+data class ScalePayload(
+    val apps: List<ScaleCommand>
+)
+
+data class ScaleResult(
+    val command: ScaleCommand,
+    val result: JsonNode?,
+    val pods: List<PodItem>
+)

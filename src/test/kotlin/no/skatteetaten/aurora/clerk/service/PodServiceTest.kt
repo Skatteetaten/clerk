@@ -5,15 +5,18 @@ import assertk.assertions.isEmpty
 import assertk.assertions.isEqualTo
 import com.fkorotkov.kubernetes.metadata
 import com.fkorotkov.kubernetes.newPod
+import com.fkorotkov.kubernetes.newPodList
 import com.fkorotkov.kubernetes.status
 import io.fabric8.kubernetes.api.model.Pod
-import no.skatteetaten.aurora.clerk.controller.PodItem
-import org.junit.jupiter.api.Test
 import java.time.Instant
+import no.skatteetaten.aurora.clerk.controller.PodItem
+import no.skatteetaten.aurora.mockmvc.extensions.mockwebserver.execute
+import org.junit.jupiter.api.Test
 
 class PodServiceTest : AbstractOpenShiftServerTest() {
 
     val namespace = "jedi-test"
+    val podService = PodService(openShiftClient)
 
     @Test
     fun `fetch a single pod`() {
@@ -42,18 +45,14 @@ class PodServiceTest : AbstractOpenShiftServerTest() {
         }
     }
 
-    @Test
-    fun `should ignore pods with different name`() {
-        withPods(createPod("yoda"), name = "luke") {
-            assertThat(it).isEmpty()
-        }
-    }
-
     fun withPods(vararg pod: Pod, name: String? = null, fn: (List<PodItem>) -> Unit) {
-        openShiftServer.openshiftClient.inNamespace(namespace).pods().create(*pod)
-        val podService = PodService(openShiftServer.openshiftClient)
-        val result = podService.getPodItems(namespace, name)
-        fn(result)
+        val podList = newPodList {
+            items = pod.toList()
+        }
+        server.execute(podList) {
+            val result = podService.getPodItems(namespace, name)
+            fn(result)
+        }
     }
 }
 

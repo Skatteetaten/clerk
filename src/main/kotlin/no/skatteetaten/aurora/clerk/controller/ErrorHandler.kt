@@ -35,7 +35,7 @@ class ErrorHandler : ResponseEntityExceptionHandler() {
         val failure = ClerkFailure(e)
         val response = ClerkResponse.fromFailure(failure)
         val headers = HttpHeaders().apply { contentType = MediaType.APPLICATION_JSON }
-        logger.debug("Handle exception", e)
+        logger.info("Handle exception message=${e.message}")
         return handleExceptionInternal(e, response, headers, httpStatus, request)
     }
 }

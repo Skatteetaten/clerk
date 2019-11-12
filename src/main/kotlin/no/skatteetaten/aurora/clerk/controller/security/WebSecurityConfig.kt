@@ -1,5 +1,6 @@
 package no.skatteetaten.aurora.clerk.controller.security
 
+import javax.servlet.http.HttpServletRequest
 import mu.KotlinLogging
 import org.slf4j.MDC
 import org.springframework.beans.factory.annotation.Value
@@ -11,7 +12,6 @@ import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationProvider
 import org.springframework.security.web.authentication.preauth.RequestHeaderAuthenticationFilter
 import org.springframework.security.web.util.matcher.RequestMatcher
-import javax.servlet.http.HttpServletRequest
 
 private val logger = KotlinLogging.logger {}
 

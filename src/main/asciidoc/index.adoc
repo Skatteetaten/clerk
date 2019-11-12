@@ -25,10 +25,9 @@ is then permitted to perform operations in its own namespace.
 In order to get this token in a running application in your cluster you can read the file
 ``/var/run/secrets/kubernetes.io/serviceaccount/token``
 
-=== Local testing
+== Local testing
 
 To test out clerk locally you need to fetch the token for the namespace you want to test against.
-
 
 Run the following invocation to obtain the token:
 
@@ -39,6 +38,27 @@ Where $namespace is the name of the namespace you want to fetch pods in.
 Then read ``/tmp/clerk-token`` in your local profile
 
 == Resources
+
+
+=== Scale
+Scale an deploymentConfig to a given replica count
+
+include::{snippets}/put-api-scale-namespace/http-request.adoc[]
+
+Httpie:
+include::{snippets}/put-api-scale-namespace/httpie-request.adoc[]
+
+Curl:
+include::{snippets}/put-api-scale-namespace/curl-request.adoc[]
+
+Response:
+include::{snippets}/put-api-scale-namespace/http-response.adoc[]
+
+If you try to use clerk with an invalid token you will get an 401 Unauthorized:
+include::{snippets}/error-pods/http-response.adoc[]
+
+If there is an error communicating with the underlying infrastructure you can get a 500 internal server error like this
+include::{snippets}/scale-error/http-response.adoc[]
 
 === Pods
 List out pods for all applications in a namespace

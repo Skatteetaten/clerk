@@ -1,0 +1,10 @@
+PUT {{apiUrl}}/api/scale/demo-m89870?sleep=3000
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "name": "whoami",
+  "replicas": 1
+}
+
+###
