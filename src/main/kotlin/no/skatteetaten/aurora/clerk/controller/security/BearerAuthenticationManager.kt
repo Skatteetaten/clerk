@@ -3,6 +3,7 @@ package no.skatteetaten.aurora.clerk.controller.security
 import java.util.regex.Pattern
 import mu.KotlinLogging
 import no.skatteetaten.aurora.openshift.webclient.OpenShiftClient
+import no.skatteetaten.aurora.openshift.webclient.blockForResource
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.BadCredentialsException
 import org.springframework.security.core.Authentication
@@ -31,9 +32,10 @@ class BearerAuthenticationManager(val openShiftClient: OpenShiftClient) : Authen
 
         try {
             val token = getBearerTokenFromAuthentication(authentication)
-            val user = openShiftClient.userToken(token).user().block() ?: BadCredentialsException("Could not find user")
+            val user = openShiftClient.userToken(token).user().blockForResource() ?: BadCredentialsException("Could not find user")
             return PreAuthenticatedAuthenticationToken(user, token)
         } catch (e: Exception) {
+            logger.warn("Feil under autentisering av bruker error=${e.localizedMessage}", e)
             throw BadCredentialsException(e.localizedMessage, e)
         }
     }
