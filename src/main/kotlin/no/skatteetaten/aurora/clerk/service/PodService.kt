@@ -21,7 +21,7 @@ class PodService(val client: OpenShiftClient) {
         } ?: emptyMap()
 
         return client.serviceAccount().pods(namespace, labelMap = appLabels)
-            .retryWithLog(100L, 2000L)
+            .retryWithLog(retryFirstInMs = 100L, retryMaxInMs = 2000L)
             .map { podList ->
             podList.items.filter {
                 val labels = it.metadata.labels
