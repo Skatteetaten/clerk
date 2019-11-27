@@ -12,7 +12,7 @@ plugins {
     id("com.github.ben-manes.versions") version "0.25.0"
     id("se.patrikerdes.use-latest-versions") version "0.2.12"
 
-    id("no.skatteetaten.gradle.aurora") version "3.1.0"
+    id("no.skatteetaten.gradle.aurora") version "3.2.0"
 }
 
 extra["jackson-bom.version"] = "2.10.0"
