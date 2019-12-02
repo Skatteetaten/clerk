@@ -6,6 +6,7 @@ import no.skatteetaten.aurora.clerk.service.PodService
 import no.skatteetaten.aurora.clerk.service.openshift.token.UserDetailsProvider
 import no.skatteetaten.aurora.openshift.webclient.OpenShiftClient
 import org.springframework.security.authentication.BadCredentialsException
+import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PutMapping
@@ -32,6 +33,15 @@ class ApplicationController(
         drep alle pods
         scale til nytt antall
      */
+
+    @DeleteMapping("/delete/{namespace}/{name}")
+    fun deletePodAndScaleDown(
+        @PathVariable namespace: String,
+        @PathVariable name: String
+    ) {
+        validateUser(namespace)
+        podService.deletePodAndScaleDown(namespace, name)
+    }
 
     @PutMapping("/scale/{namespace}")
     fun scale(
