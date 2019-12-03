@@ -16,7 +16,7 @@ private val logger = KotlinLogging.logger {}
 class DeploymentConfigService(
     val client: OpenShiftClient,
     val podService: PodService,
-    @Value("\${gobo.wait.afterDeletePodTime}") val waitAfterDeletePodTime: Long
+    @Value("\${gobo.wait.afterDeletePodTime}") val waitAfterDeletePodTime: Long = 500
 ) {
 
     fun scale(
