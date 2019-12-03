@@ -8,10 +8,10 @@ import com.fkorotkov.kubernetes.newPod
 import com.fkorotkov.kubernetes.newPodList
 import com.fkorotkov.kubernetes.status
 import io.fabric8.kubernetes.api.model.Pod
-import java.time.Instant
 import no.skatteetaten.aurora.clerk.controller.PodItem
 import no.skatteetaten.aurora.mockmvc.extensions.mockwebserver.execute
 import org.junit.jupiter.api.Test
+import java.time.Instant
 
 class PodServiceTest : AbstractOpenShiftServerTest() {
 
@@ -49,7 +49,7 @@ class PodServiceTest : AbstractOpenShiftServerTest() {
         val podList = newPodList {
             items = pod.toList()
         }
-        server.execute(podList) {
+        openShiftMock().execute(podList) {
             val result = podService.getPodItems(namespace, name)
             fn(result)
         }

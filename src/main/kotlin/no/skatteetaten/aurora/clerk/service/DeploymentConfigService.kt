@@ -47,7 +47,7 @@ class DeploymentConfigService(
         val dc = client.serviceAccount().deploymentConfig(namespace, dcName).block()
             ?: throw NoSuchResourceException("Cannot find DeploymentConfig $dcName in $namespace")
 
-        logger.info("Deleting pod={}", name)
+        logger.info("Deleting pod={} in namespace={}", name, namespace)
         client.serviceAccount().deletePod(namespace, name).block()
 
         Thread.sleep(waitAfterDeletePodTime)
