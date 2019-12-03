@@ -4,7 +4,6 @@ import mu.KotlinLogging
 import no.skatteetaten.aurora.clerk.service.DeploymentConfigService
 import no.skatteetaten.aurora.clerk.service.PodService
 import no.skatteetaten.aurora.clerk.service.openshift.token.UserDetailsProvider
-import no.skatteetaten.aurora.openshift.webclient.OpenShiftClient
 import org.springframework.security.authentication.BadCredentialsException
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
@@ -23,8 +22,7 @@ private val logger = KotlinLogging.logger {}
 class ApplicationController(
     val userProvider: UserDetailsProvider,
     val deploymentConfigService: DeploymentConfigService,
-    val podService: PodService,
-    val client: OpenShiftClient
+    val podService: PodService
 ) {
 
     /* killPods
@@ -33,15 +31,6 @@ class ApplicationController(
         drep alle pods
         scale til nytt antall
      */
-
-    @DeleteMapping("/delete/{namespace}/{name}")
-    fun deletePodAndScaleDown(
-        @PathVariable namespace: String,
-        @PathVariable name: String
-    ) {
-        validateUser(namespace)
-        podService.deletePodAndScaleDown(namespace, name)
-    }
 
     @PutMapping("/scale/{namespace}")
     fun scale(
@@ -74,6 +63,24 @@ class ApplicationController(
         val message1 = "Fetched count=${podItems.count()} pods for namespace=$namespace $namePart"
         logger.info(message1)
         return ClerkResponse(items = podItems, message = message1)
+    }
+
+    @DeleteMapping("/pods/{namespace}/{name}")
+    fun deletePodAndScaleDown(
+        @PathVariable namespace: String,
+        @PathVariable name: String
+    ): ClerkResponse<DeletePodAndScaleResult> {
+        validateUser(namespace)
+        try {
+            val deletePodAndScaleResult = deploymentConfigService.deletePodAndScaleDown(namespace, name)
+            return ClerkResponse(items = listOf(deletePodAndScaleResult))
+        } catch (e: WebClientResponseException) {
+            logger.warn("DeletePodAndScaleDown failed response=${e.responseBodyAsString}")
+            throw RuntimeException(
+                "Delete and/or scale operation failed, pod=$name in namespace=$namespace causeStatusCode=${e.statusCode} causeMessage=${e.message}",
+                e
+            )
+        }
     }
 
     private fun validateUser(namespace: String) {

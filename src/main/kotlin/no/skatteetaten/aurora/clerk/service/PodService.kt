@@ -1,10 +1,8 @@
 package no.skatteetaten.aurora.clerk.service
 
 import mu.KotlinLogging
-import no.skatteetaten.aurora.clerk.controller.NoSuchResourceException
 import no.skatteetaten.aurora.clerk.controller.PodItem
 import no.skatteetaten.aurora.openshift.webclient.OpenShiftClient
-import no.skatteetaten.aurora.openshift.webclient.getDeploymentConfigName
 import no.skatteetaten.aurora.openshift.webclient.retryWithLog
 import org.springframework.stereotype.Service
 
@@ -40,24 +38,5 @@ class PodService(val client: OpenShiftClient) {
                     )
                 }
             }.block() ?: emptyList()
-    }
-
-    fun deletePodAndScaleDown(namespace: String, name: String) {
-        val pod = client.serviceAccount().pod(namespace, name).block()
-            ?: throw NoSuchResourceException("Cannot find Pod $name in $namespace")
-
-        val dcName = pod.getDeploymentConfigName()
-            ?: throw RuntimeException("Pod $name does'nt have a DeploymentConfig annotation")
-
-        val dc = client.serviceAccount().deploymentConfig(namespace, dcName).block()
-            ?: throw NoSuchResourceException("Cannot find DeploymentConfig $dcName in $namespace")
-
-        val replicas = dc.spec.replicas - 1
-
-        logger.info("Deleting Pod {}", name)
-        val deletePodResult = client.serviceAccount().deletePod(namespace, name).block()
-
-        logger.info("Scaling down {} from {} replicas to {} replica(s)", dcName, dc.spec.replicas, replicas)
-        val scaleResult = client.serviceAccount().scale(namespace, dcName, replicas).block()
     }
 }
