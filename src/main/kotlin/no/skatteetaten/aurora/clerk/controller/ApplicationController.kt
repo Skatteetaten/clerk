@@ -25,13 +25,6 @@ class ApplicationController(
     val podService: PodService
 ) {
 
-    /* killPods
-        hent alle pods, sjekk av killPodList er korrekt.
-        finn nytt antall
-        drep alle pods
-        scale til nytt antall
-     */
-
     @PutMapping("/scale/{namespace}")
     fun scale(
         @PathVariable namespace: String,
