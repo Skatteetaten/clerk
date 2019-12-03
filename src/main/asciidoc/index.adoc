@@ -82,6 +82,19 @@ It is also possible to filter the pods on applicationName
 include::{snippets}/get-api-pods-namespace_applicationName=luke/http-request.adoc[]
 include::{snippets}/get-api-pods-namespace_applicationName=luke/http-response.adoc[]
 
+==== Delete pod
+Delete a pod in a namespace. This operation will also scale down.
+
+include::{snippets}/delete-api-pods-namespace-name/http-request.adoc[]
+
+Httpie:
+include::{snippets}/delete-api-pods-namespace-name/httpie-request.adoc[]
+
+Curl:
+include::{snippets}/delete-api-pods-namespace-name/curl-request.adoc[]
+
+Response:
+include::{snippets}/delete-api-pods-namespace-name/http-response.adoc[]
 
 [[overview]]
 == Terms

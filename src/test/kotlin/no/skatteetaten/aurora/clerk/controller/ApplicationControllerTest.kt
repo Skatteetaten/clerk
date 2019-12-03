@@ -8,6 +8,7 @@ import no.skatteetaten.aurora.clerk.service.openshift.token.UserDetailsProvider
 import no.skatteetaten.aurora.mockmvc.extensions.Path
 import no.skatteetaten.aurora.mockmvc.extensions.authorization
 import no.skatteetaten.aurora.mockmvc.extensions.contentTypeJson
+import no.skatteetaten.aurora.mockmvc.extensions.delete
 import no.skatteetaten.aurora.mockmvc.extensions.get
 import no.skatteetaten.aurora.mockmvc.extensions.put
 import no.skatteetaten.aurora.mockmvc.extensions.responseJsonPath
@@ -129,6 +130,22 @@ class ApplicationControllerTest : AbstractSecurityControllerTest() {
             status(INTERNAL_SERVER_ERROR)
                 .responseJsonPath("$.success").equalsValue(false)
                 .responseJsonPath("$.message").equalsValue("Could not scale dc with name=luke in namespace=jedi-test causeStatusCode=404 NOT_FOUND causeMessage=404 Not Found")
+        }
+    }
+
+    @Test
+    @WithUserDetails
+    fun `should delete pod in namespace and scale down`() {
+        val deletePodAndScaleResult = DeletePodAndScaleResult(1, luke.name, null)
+        given(dcService.deletePodAndScaleDown(namespace, luke.name)).willReturn(deletePodAndScaleResult)
+
+        mockMvc.delete(
+            headers = HttpHeaders().authorization("Bearer <token>"),
+            path = Path("/api/pods/{namespace}/{name}", namespace, luke.name)
+        ) {
+            statusIsOk()
+                .responseJsonPath("$.items[0].currentReplicas").equalsValue(1)
+                .responseJsonPath("$.items[0].deletedPodName").equalsValue(luke.name)
         }
     }
 }
