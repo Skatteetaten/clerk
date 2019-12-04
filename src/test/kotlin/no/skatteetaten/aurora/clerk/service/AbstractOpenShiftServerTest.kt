@@ -8,6 +8,7 @@ import no.skatteetaten.aurora.openshift.webclient.OpenShiftUri
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import okhttp3.mockwebserver.RecordedRequest
+import org.junit.jupiter.api.AfterEach
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
 import org.springframework.http.MediaType
@@ -21,6 +22,11 @@ open class AbstractOpenShiftServerTest {
 
     fun openShiftMock(block: HttpMock.() -> Unit = {}): MockWebServer {
         return httpMockServer(openShiftPort, block)
+    }
+
+    @AfterEach
+    fun after() {
+        HttpMock.clearAllHttpMocks()
     }
 }
 

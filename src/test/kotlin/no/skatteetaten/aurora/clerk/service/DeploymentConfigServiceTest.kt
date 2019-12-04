@@ -5,7 +5,6 @@ import assertk.assertions.isEqualTo
 import assertk.assertions.isFailure
 import assertk.assertions.isInstanceOf
 import assertk.assertions.isNotNull
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fkorotkov.kubernetes.extensions.newScale
 import com.fkorotkov.kubernetes.extensions.spec
 import com.fkorotkov.kubernetes.metadata
@@ -15,21 +14,18 @@ import com.fkorotkov.openshift.newDeploymentConfig
 import com.fkorotkov.openshift.spec
 import io.mockk.every
 import io.mockk.mockk
+import java.time.Instant
 import no.skatteetaten.aurora.clerk.controller.PodItem
 import no.skatteetaten.aurora.clerk.controller.ScaleCommand
-import no.skatteetaten.aurora.mockmvc.extensions.mockwebserver.execute
 import no.skatteetaten.aurora.openshift.webclient.DEPLOY_CONFIG_ANNOTATION
 import no.skatteetaten.aurora.openshift.webclient.KubernetesApiGroup.POD
 import no.skatteetaten.aurora.openshift.webclient.OpenShiftApiGroup.DEPLOYMENTCONFIG
 import no.skatteetaten.aurora.openshift.webclient.OpenShiftApiGroup.DEPLOYMENTCONFIGSCALE
 import okhttp3.mockwebserver.MockResponse
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.TestInstance
 import org.springframework.http.HttpMethod
 import org.springframework.web.reactive.function.client.WebClientResponseException
-import java.time.Instant
 
-@TestInstance(TestInstance.Lifecycle.PER_METHOD)
 class DeploymentConfigServiceTest : AbstractOpenShiftServerTest() {
 
     private final val podService: PodService = mockk()
@@ -46,26 +42,29 @@ class DeploymentConfigServiceTest : AbstractOpenShiftServerTest() {
     fun `scale single item`() {
 
         every { podService.getPodItems(env, name) } returns listOf(luke)
-        val jsonResponse = """
-            { }
-        """.trimIndent()
 
-        val response = jacksonObjectMapper().readTree(jsonResponse)
-
-        openShiftMock().execute(response) {
-            val result = dcService.scale(command, env, 100)
-            assertThat(result.pods.size).isEqualTo(1)
+        openShiftMock {
+            rule {
+                """{}""".toJsonBody()
+            }
         }
+
+        val result = dcService.scale(command, env, 100)
+        assertThat(result.pods.size).isEqualTo(1)
     }
 
     @Test
     fun `scale single item fails http communication`() {
 
-        openShiftMock().execute(404 to "not found") {
-            assertThat {
-                dcService.scale(command, env, 100)
-            }.isFailure().isInstanceOf(WebClientResponseException.NotFound::class)
+        openShiftMock {
+            rule {
+                MockResponse().setBody("not found").setResponseCode(404)
+            }
         }
+
+        assertThat {
+            dcService.scale(command, env, 100)
+        }.isFailure().isInstanceOf(WebClientResponseException.NotFound::class)
     }
 
     @Test
