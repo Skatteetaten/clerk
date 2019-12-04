@@ -1,6 +1,7 @@
 package no.skatteetaten.aurora.clerk.service
 
 import assertk.assertThat
+import assertk.assertions.hasMessage
 import assertk.assertions.isEqualTo
 import assertk.assertions.isFailure
 import assertk.assertions.isInstanceOf
@@ -17,6 +18,7 @@ import io.mockk.mockk
 import java.time.Instant
 import no.skatteetaten.aurora.clerk.controller.PodItem
 import no.skatteetaten.aurora.clerk.controller.ScaleCommand
+import no.skatteetaten.aurora.mockmvc.extensions.mockwebserver.HttpMock
 import no.skatteetaten.aurora.openshift.webclient.DEPLOYMENT_CONFIG_ANNOTATION
 import no.skatteetaten.aurora.openshift.webclient.KubernetesApiGroup.POD
 import no.skatteetaten.aurora.openshift.webclient.OpenShiftApiGroup.DEPLOYMENTCONFIG
@@ -28,11 +30,12 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
 
 class DeploymentConfigServiceTest : AbstractOpenShiftServerTest() {
 
-    private final val podService: PodService = mockk()
+    private val podService: PodService = mockk()
     private val dcService = DeploymentConfigService(openShiftClient, podService)
 
     private val env = "jedi-test"
     private val name = "luke"
+    private val dcName = "starwars"
     private val started = Instant.now().toString()
 
     private val luke = PodItem("$name-1", name, started, "Running")
@@ -69,20 +72,9 @@ class DeploymentConfigServiceTest : AbstractOpenShiftServerTest() {
 
     @Test
     fun `delete pod then reduce (scale) replicas with one`() {
-        val dcName = "starwars"
 
         openShiftMock {
-            rule({ matchMethodAndEndpoint(HttpMethod.GET, POD.uri(env, luke.name)) }) {
-                newPod {
-                    metadata {
-                        name = luke.name
-                        namespace = env
-                        annotations = mapOf(
-                            DEPLOYMENT_CONFIG_ANNOTATION to dcName
-                        )
-                    }
-                }.toJsonBody()
-            }
+            getPodMockRule()
 
             rule({ matchMethodAndEndpoint(HttpMethod.GET, DEPLOYMENTCONFIG.uri(env, dcName)) }) {
                 newDeploymentConfig {
@@ -114,4 +106,65 @@ class DeploymentConfigServiceTest : AbstractOpenShiftServerTest() {
         assertThat(result.deletedPodName).isEqualTo(luke.name)
         assertThat(result.scaleResult).isNotNull()
     }
+
+    @Test
+    fun `should fail when Pod is not found`() {
+
+        openShiftMock {
+            rule({ matchMethodAndEndpoint(HttpMethod.GET, POD.uri(env, luke.name)) }) {
+                MockResponse().setResponseCode(404)
+            }
+        }
+
+        assertThat {
+            dcService.deletePodAndScaleDown(env, luke.name)
+        }.isFailure().hasMessage("Cannot find Pod ${luke.name} in $env")
+    }
+
+    @Test
+    fun `should fail when DeploymentConfig is not found`() {
+        openShiftMock {
+            getPodMockRule()
+            rule({ matchMethodAndEndpoint(HttpMethod.GET, DEPLOYMENTCONFIG.uri(env, dcName)) }) {
+                MockResponse().setResponseCode(404)
+            }
+        }
+
+        assertThat {
+            dcService.deletePodAndScaleDown(env, luke.name)
+        }.isFailure().hasMessage("Cannot find DeploymentConfig $dcName in $env")
+    }
+
+    @Test
+    fun `should fail when DeploymentConfig annotation for pod is missing`() {
+        openShiftMock {
+            getPodMockRule {
+                newPod {
+                    metadata {
+                        name = luke.name
+                        namespace = env
+                        annotations = emptyMap()
+                    }
+                }.toJsonBody()
+            }
+        }
+
+        assertThat {
+            dcService.deletePodAndScaleDown(env, luke.name)
+        }.isFailure().hasMessage("Pod ${luke.name} does'nt have a DeploymentConfig annotation")
+    }
+
+    private fun HttpMock.getPodMockRule(fn: () -> MockResponse = ::createPod) = this.rule({ matchMethodAndEndpoint(HttpMethod.GET, POD.uri(env, luke.name)) }) {
+        fn()
+    }
+
+    private fun createPod() = newPod {
+            metadata {
+                name = luke.name
+                namespace = env
+                annotations = mapOf(
+                    DEPLOYMENT_CONFIG_ANNOTATION to dcName
+                )
+            }
+        }.toJsonBody()
 }
