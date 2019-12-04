@@ -25,9 +25,11 @@ import no.skatteetaten.aurora.openshift.webclient.OpenShiftApiGroup.DEPLOYMENTCO
 import no.skatteetaten.aurora.openshift.webclient.OpenShiftApiGroup.DEPLOYMENTCONFIGSCALE
 import okhttp3.mockwebserver.MockResponse
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.TestInstance
 import org.springframework.http.HttpMethod
 import org.springframework.web.reactive.function.client.WebClientResponseException
 
+@TestInstance(TestInstance.Lifecycle.PER_METHOD)
 class DeploymentConfigServiceTest : AbstractOpenShiftServerTest() {
 
     private val podService: PodService = mockk()
@@ -109,7 +111,6 @@ class DeploymentConfigServiceTest : AbstractOpenShiftServerTest() {
 
     @Test
     fun `should fail when Pod is not found`() {
-
         openShiftMock {
             rule({ matchMethodAndEndpoint(HttpMethod.GET, POD.uri(env, luke.name)) }) {
                 MockResponse().setResponseCode(404)
@@ -123,6 +124,7 @@ class DeploymentConfigServiceTest : AbstractOpenShiftServerTest() {
 
     @Test
     fun `should fail when DeploymentConfig is not found`() {
+
         openShiftMock {
             getPodMockRule()
             rule({ matchMethodAndEndpoint(HttpMethod.GET, DEPLOYMENTCONFIG.uri(env, dcName)) }) {
@@ -137,6 +139,7 @@ class DeploymentConfigServiceTest : AbstractOpenShiftServerTest() {
 
     @Test
     fun `should fail when DeploymentConfig annotation for pod is missing`() {
+
         openShiftMock {
             getPodMockRule {
                 newPod {
@@ -154,17 +157,18 @@ class DeploymentConfigServiceTest : AbstractOpenShiftServerTest() {
         }.isFailure().hasMessage("Pod ${luke.name} does'nt have a DeploymentConfig annotation")
     }
 
-    private fun HttpMock.getPodMockRule(fn: () -> MockResponse = ::createPod) = this.rule({ matchMethodAndEndpoint(HttpMethod.GET, POD.uri(env, luke.name)) }) {
-        fn()
-    }
+    private fun HttpMock.getPodMockRule(fn: () -> MockResponse = ::createPod) =
+        this.rule({ matchMethodAndEndpoint(HttpMethod.GET, POD.uri(env, luke.name)) }) {
+            fn()
+        }
 
     private fun createPod() = newPod {
-            metadata {
-                name = luke.name
-                namespace = env
-                annotations = mapOf(
-                    DEPLOYMENT_CONFIG_ANNOTATION to dcName
-                )
-            }
-        }.toJsonBody()
+        metadata {
+            name = luke.name
+            namespace = env
+            annotations = mapOf(
+                DEPLOYMENT_CONFIG_ANNOTATION to dcName
+            )
+        }
+    }.toJsonBody()
 }
