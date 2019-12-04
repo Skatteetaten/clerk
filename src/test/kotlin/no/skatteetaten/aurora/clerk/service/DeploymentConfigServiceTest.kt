@@ -17,7 +17,7 @@ import io.mockk.mockk
 import java.time.Instant
 import no.skatteetaten.aurora.clerk.controller.PodItem
 import no.skatteetaten.aurora.clerk.controller.ScaleCommand
-import no.skatteetaten.aurora.openshift.webclient.DEPLOY_CONFIG_ANNOTATION
+import no.skatteetaten.aurora.openshift.webclient.DEPLOYMENT_CONFIG_ANNOTATION
 import no.skatteetaten.aurora.openshift.webclient.KubernetesApiGroup.POD
 import no.skatteetaten.aurora.openshift.webclient.OpenShiftApiGroup.DEPLOYMENTCONFIG
 import no.skatteetaten.aurora.openshift.webclient.OpenShiftApiGroup.DEPLOYMENTCONFIGSCALE
@@ -78,7 +78,7 @@ class DeploymentConfigServiceTest : AbstractOpenShiftServerTest() {
                         name = luke.name
                         namespace = env
                         annotations = mapOf(
-                            DEPLOY_CONFIG_ANNOTATION to dcName
+                            DEPLOYMENT_CONFIG_ANNOTATION to dcName
                         )
                     }
                 }.toJsonBody()

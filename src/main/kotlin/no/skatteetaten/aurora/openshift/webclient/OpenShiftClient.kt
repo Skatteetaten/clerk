@@ -43,7 +43,7 @@ import reactor.retry.Retry
 
 private val logger = KotlinLogging.logger {}
 
-const val DEPLOY_CONFIG_ANNOTATION = "openshift.io/deployment-config.name"
+const val DEPLOYMENT_CONFIG_ANNOTATION = "openshift.io/deployment-config.name"
 
 abstract class AbstractOpenShiftClient(private val webClient: WebClient, private val token: String? = null) {
 
@@ -345,5 +345,5 @@ fun <T : HasMetadata?> Mono<out KubernetesResourceList<T>>.blockForList(
 ): List<T> = this.blockForResource(retryFirstInMs, retryMaxInMs)?.items ?: emptyList()
 
 fun Pod.getDeploymentConfigName(): String? {
-    return this.metadata.annotations[DEPLOY_CONFIG_ANNOTATION]
+    return this.metadata.annotations[DEPLOYMENT_CONFIG_ANNOTATION]
 }

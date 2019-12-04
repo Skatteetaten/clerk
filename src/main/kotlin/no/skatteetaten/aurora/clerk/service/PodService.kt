@@ -1,6 +1,5 @@
 package no.skatteetaten.aurora.clerk.service
 
-import mu.KotlinLogging
 import no.skatteetaten.aurora.clerk.controller.PodItem
 import no.skatteetaten.aurora.openshift.webclient.OpenShiftClient
 import no.skatteetaten.aurora.openshift.webclient.retryWithLog
@@ -8,8 +7,6 @@ import org.springframework.stereotype.Service
 
 val deployPodLabel = "openshift.io/deployer-pod-for.name"
 val buildPodLabel = "openshift.io/build.name"
-
-private val logger = KotlinLogging.logger {}
 
 @Service
 class PodService(val client: OpenShiftClient) {
