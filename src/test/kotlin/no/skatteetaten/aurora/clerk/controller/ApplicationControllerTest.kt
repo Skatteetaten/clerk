@@ -148,4 +148,23 @@ class ApplicationControllerTest : AbstractSecurityControllerTest() {
                 .responseJsonPath("$.items[0].deletedPodName").equalsValue(luke.name)
         }
     }
+
+    @Test
+    @WithUserDetails
+    fun `deletePodAndScale endpoint handle errors`() {
+
+        given(dcService.deletePodAndScaleDown(namespace, luke.name)).willThrow(
+            WebClientResponseException.create(404, "Not Found", HttpHeaders(), "".toByteArray(), Charsets.UTF_8)
+        )
+
+        mockMvc.delete(
+            headers = HttpHeaders().authorization("Bearer <token>").contentTypeJson(),
+            docsIdentifier = "deletePodAndScale-error",
+            path = Path("/api/pods/{namespace}/{name}", namespace, luke.name)
+        ) {
+            status(INTERNAL_SERVER_ERROR)
+                .responseJsonPath("$.success").equalsValue(false)
+                .responseJsonPath("$.message").equalsValue("Delete and/or scale operation failed, pod=luke-1 in namespace=jedi-test causeStatusCode=404 NOT_FOUND causeMessage=404 Not Found")
+        }
+    }
 }
