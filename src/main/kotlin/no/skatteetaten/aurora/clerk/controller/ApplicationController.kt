@@ -69,7 +69,7 @@ class ApplicationController(
             return ClerkResponse(items = listOf(deletePodAndScaleResult))
         } catch (e: WebClientResponseException) {
             logger.warn("DeletePodAndScaleDown failed response=${e.responseBodyAsString}")
-            throw RuntimeException(
+            throw ClerkException(
                 "Delete and/or scale operation failed, pod=$name in namespace=$namespace causeStatusCode=${e.statusCode} causeMessage=${e.message}",
                 e
             )
