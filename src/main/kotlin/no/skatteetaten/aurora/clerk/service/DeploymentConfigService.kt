@@ -8,17 +8,12 @@ import no.skatteetaten.aurora.clerk.controller.ScaleResult
 import no.skatteetaten.aurora.openshift.webclient.OpenShiftClient
 import no.skatteetaten.aurora.openshift.webclient.blockForResource
 import no.skatteetaten.aurora.openshift.webclient.getDeploymentConfigName
-import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 
 private val logger = KotlinLogging.logger {}
 
 @Service
-class DeploymentConfigService(
-    val client: OpenShiftClient,
-    val podService: PodService,
-    @Value("\${gobo.wait.afterDeletePodTime}") val waitAfterDeletePodTime: Long = 500
-) {
+class DeploymentConfigService(val client: OpenShiftClient, val podService: PodService) {
 
     fun scale(
         command: ScaleCommand,
@@ -51,8 +46,6 @@ class DeploymentConfigService(
 
         logger.info("Deleting pod={} in namespace={}", name, namespace)
         client.serviceAccount().deletePod(namespace, name).blockForResource()
-
-        Thread.sleep(waitAfterDeletePodTime)
 
         val replicas = dc.spec.replicas - 1
         logger.info(

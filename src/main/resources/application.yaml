@@ -22,10 +22,6 @@ integrations:
     tokenLocation: file:/var/run/secrets/kubernetes.io/serviceaccount/token
     url: https://kubernetes.default.svc.cluster.local
 
-gobo:
-    wait:
-        afterDeletePodTime: 500
-
 ---
 spring:
     profiles: local
