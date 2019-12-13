@@ -65,8 +65,8 @@ class ApplicationController(
     ): ClerkResponse<DeletePodAndScaleResult> {
         validateUser(namespace)
         try {
-            val deletePodAndScaleResult = deploymentConfigService.deletePodAndScaleDown(namespace, name)
-            return ClerkResponse(items = listOf(deletePodAndScaleResult))
+            deploymentConfigService.deletePodAndScaleDown(namespace, name)
+            return ClerkResponse()
         } catch (e: WebClientResponseException) {
             logger.warn("DeletePodAndScaleDown failed response=${e.responseBodyAsString}")
             throw ClerkException(

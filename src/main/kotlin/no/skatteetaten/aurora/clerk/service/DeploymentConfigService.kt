@@ -1,8 +1,6 @@
 package no.skatteetaten.aurora.clerk.service
 
 import mu.KotlinLogging
-import no.skatteetaten.aurora.clerk.controller.DeletePodAndScaleResult
-import no.skatteetaten.aurora.clerk.controller.NoSuchResourceException
 import no.skatteetaten.aurora.clerk.controller.ScaleCommand
 import no.skatteetaten.aurora.clerk.controller.ScaleResult
 import no.skatteetaten.aurora.openshift.webclient.OpenShiftClient
@@ -33,16 +31,18 @@ class DeploymentConfigService(val client: OpenShiftClient, val podService: PodSe
         return ScaleResult(command, result, pods)
     }
 
-    fun deletePodAndScaleDown(namespace: String, name: String): DeletePodAndScaleResult {
+    fun deletePodAndScaleDown(namespace: String, name: String) {
 
         val pod = client.serviceAccount().pod(namespace, name).blockForResource()
-            ?: throw NoSuchResourceException("Cannot find Pod $name in $namespace")
+        if (pod == null || pod.metadata.deletionTimestamp?.isBlank() == true) {
+            return
+        }
 
         val dcName = pod.getDeploymentConfigName()
-            ?: throw RuntimeException("Pod $name does'nt have a DeploymentConfig annotation")
+            ?: throw IllegalStateException("Pod $name does'nt have a deploymentconfig annotation")
 
         val dc = client.serviceAccount().deploymentConfig(namespace, dcName).blockForResource()
-            ?: throw NoSuchResourceException("Cannot find DeploymentConfig $dcName in $namespace")
+            ?: throw IllegalStateException("Cannot find deploymentconfig $dcName in $namespace")
 
         logger.info("Deleting pod={} in namespace={}", name, namespace)
         client.serviceAccount().deletePod(namespace, name).blockForResource()
@@ -55,8 +55,8 @@ class DeploymentConfigService(val client: OpenShiftClient, val podService: PodSe
             dc.spec.replicas,
             replicas
         )
-        val result = client.serviceAccount().scale(namespace, dcName, replicas).blockForResource()
 
-        return DeletePodAndScaleResult(currentReplicas = replicas, deletedPodName = name, scaleResult = result)
+        val result = client.serviceAccount().scale(namespace, dcName, replicas).blockForResource()
+        logger.debug("scale result for dc=$dcName in namespace=$namespace result={}", result)
     }
 }

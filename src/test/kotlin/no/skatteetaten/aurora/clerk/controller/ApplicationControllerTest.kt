@@ -136,16 +136,12 @@ class ApplicationControllerTest : AbstractSecurityControllerTest() {
     @Test
     @WithUserDetails
     fun `should delete pod in namespace and scale down`() {
-        val deletePodAndScaleResult = DeletePodAndScaleResult(1, luke.name, null)
-        given(dcService.deletePodAndScaleDown(namespace, luke.name)).willReturn(deletePodAndScaleResult)
 
         mockMvc.delete(
             headers = HttpHeaders().authorization("Bearer <token>"),
             path = Path("/api/pods/{namespace}/{name}", namespace, luke.name)
         ) {
             statusIsOk()
-                .responseJsonPath("$.items[0].currentReplicas").equalsValue(1)
-                .responseJsonPath("$.items[0].deletedPodName").equalsValue(luke.name)
         }
     }
 

@@ -5,7 +5,6 @@ import assertk.assertions.hasMessage
 import assertk.assertions.isEqualTo
 import assertk.assertions.isFailure
 import assertk.assertions.isInstanceOf
-import assertk.assertions.isNotNull
 import com.fkorotkov.kubernetes.extensions.newScale
 import com.fkorotkov.kubernetes.extensions.spec
 import com.fkorotkov.kubernetes.metadata
@@ -75,7 +74,7 @@ class DeploymentConfigServiceTest : AbstractOpenShiftServerTest() {
     @Test
     fun `delete pod then reduce (scale) replicas with one`() {
 
-        openShiftMock {
+        val mockServer = openShiftMock {
             getPodMockRule()
 
             rule({ matchMethodAndEndpoint(HttpMethod.GET, DEPLOYMENTCONFIG.uri(env, dcName)) }) {
@@ -103,10 +102,8 @@ class DeploymentConfigServiceTest : AbstractOpenShiftServerTest() {
             }
         }
 
-        val result = dcService.deletePodAndScaleDown(env, luke.name)
-        assertThat(result.currentReplicas).isEqualTo(1)
-        assertThat(result.deletedPodName).isEqualTo(luke.name)
-        assertThat(result.scaleResult).isNotNull()
+        dcService.deletePodAndScaleDown(env, luke.name)
+        assertThat(mockServer.requestCount).isEqualTo(4)
     }
 
     @Test
