@@ -34,7 +34,7 @@ class DeploymentConfigService(val client: OpenShiftClient, val podService: PodSe
     fun deletePodAndScaleDown(namespace: String, name: String) {
 
         val pod = client.serviceAccount().pod(namespace, name).blockForResource()
-        if (pod == null || pod.metadata.deletionTimestamp?.isBlank() == true) {
+        if (pod == null || pod.metadata.deletionTimestamp?.isNotBlank() == true) {
             return
         }
 

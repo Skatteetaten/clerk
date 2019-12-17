@@ -5,6 +5,7 @@ import assertk.assertions.hasMessage
 import assertk.assertions.isEqualTo
 import assertk.assertions.isFailure
 import assertk.assertions.isInstanceOf
+import assertk.assertions.isSuccess
 import com.fkorotkov.kubernetes.extensions.newScale
 import com.fkorotkov.kubernetes.extensions.spec
 import com.fkorotkov.kubernetes.metadata
@@ -107,7 +108,7 @@ class DeploymentConfigServiceTest : AbstractOpenShiftServerTest() {
     }
 
     @Test
-    fun `should fail when Pod is not found`() {
+    fun `should return ok when pod is not found`() {
         openShiftMock {
             rule({ matchMethodAndEndpoint(HttpMethod.GET, POD.uri(env, luke.name)) }) {
                 MockResponse().setResponseCode(404)
@@ -116,7 +117,29 @@ class DeploymentConfigServiceTest : AbstractOpenShiftServerTest() {
 
         assertThat {
             dcService.deletePodAndScaleDown(env, luke.name)
-        }.isFailure().hasMessage("Cannot find Pod ${luke.name} in $env")
+        }.isSuccess()
+    }
+
+    @Test
+    fun `should return ok when pod is being deleted`() {
+        openShiftMock {
+            getPodMockRule {
+                newPod {
+                    metadata {
+                        name = luke.name
+                        namespace = env
+                        annotations = mapOf(
+                            DEPLOYMENT_CONFIG_ANNOTATION to dcName
+                        )
+                        deletionTimestamp = "10:00:00"
+                    }
+                }.toJsonBody()
+            }
+        }
+
+        assertThat {
+            dcService.deletePodAndScaleDown(env, luke.name)
+        }.isSuccess()
     }
 
     @Test
@@ -131,7 +154,7 @@ class DeploymentConfigServiceTest : AbstractOpenShiftServerTest() {
 
         assertThat {
             dcService.deletePodAndScaleDown(env, luke.name)
-        }.isFailure().hasMessage("Cannot find DeploymentConfig $dcName in $env")
+        }.isFailure().hasMessage("Cannot find deploymentconfig $dcName in $env")
     }
 
     @Test
@@ -151,7 +174,7 @@ class DeploymentConfigServiceTest : AbstractOpenShiftServerTest() {
 
         assertThat {
             dcService.deletePodAndScaleDown(env, luke.name)
-        }.isFailure().hasMessage("Pod ${luke.name} does'nt have a DeploymentConfig annotation")
+        }.isFailure().hasMessage("Pod ${luke.name} does'nt have a deploymentconfig annotation")
     }
 
     private fun HttpMock.getPodMockRule(fn: () -> MockResponse = ::createPod) =
