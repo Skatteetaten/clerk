@@ -23,17 +23,17 @@ class PodService(val client: OpenShiftClient) {
         return client.serviceAccount().pods(namespace, labelMap = appLabels)
             .retryWithLog(retryFirstInMs = 100L, retryMaxInMs = 2000L)
             .map { podList ->
-            podList.items.filter {
-                val labels = it.metadata.labels
-                !labels.containsKey(deployPodLabel) && !labels.containsKey(buildPodLabel)
-            }.map {
-                PodItem(
-                    name = it.metadata.name,
-                    applicationName = it.metadata.labels["name"] ?: it.metadata.labels["app"],
-                    startTime = it.status.startTime,
-                    status = it.status.phase
-                )
-            }
-        }.block() ?: emptyList()
+                podList.items.filter {
+                    val labels = it.metadata.labels
+                    !labels.containsKey(deployPodLabel) && !labels.containsKey(buildPodLabel)
+                }.map {
+                    PodItem(
+                        name = it.metadata.name,
+                        applicationName = it.metadata.labels["name"] ?: it.metadata.labels["app"],
+                        startTime = it.status.startTime,
+                        status = it.status.phase
+                    )
+                }
+            }.block() ?: emptyList()
     }
 }

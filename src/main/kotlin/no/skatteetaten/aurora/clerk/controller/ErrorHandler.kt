@@ -26,6 +26,11 @@ class ErrorHandler : ResponseEntityExceptionHandler() {
         return handleException(e, request, HttpStatus.UNAUTHORIZED)
     }
 
+    @ExceptionHandler(ClerkException::class)
+    fun handleInternalError(e: ClerkException, request: WebRequest): ResponseEntity<Any>? {
+        return handleException(e, request, HttpStatus.INTERNAL_SERVER_ERROR)
+    }
+
     @ExceptionHandler(NoSuchResourceException::class)
     fun handleResourceNotFound(e: NoSuchResourceException, request: WebRequest): ResponseEntity<Any>? {
         return handleException(e, request, HttpStatus.NOT_FOUND)
@@ -41,3 +46,5 @@ class ErrorHandler : ResponseEntityExceptionHandler() {
 }
 
 class NoSuchResourceException(message: String) : RuntimeException(message)
+
+class ClerkException(message: String, cause: Throwable?) : RuntimeException(message, cause)

@@ -46,3 +46,9 @@ data class ScaleResult(
     val result: JsonNode?,
     val pods: List<PodItem>
 )
+
+data class DeletePodAndScaleResult(
+    val currentReplicas: Int,
+    val deletedPodName: String,
+    val scaleResult: JsonNode?
+)

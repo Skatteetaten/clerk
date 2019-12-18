@@ -7,6 +7,7 @@ import com.fkorotkov.kubernetes.extensions.newScale
 import com.fkorotkov.kubernetes.extensions.spec
 import io.fabric8.kubernetes.api.model.HasMetadata
 import io.fabric8.kubernetes.api.model.KubernetesResourceList
+import io.fabric8.kubernetes.api.model.Pod
 import io.fabric8.kubernetes.api.model.PodList
 import io.fabric8.kubernetes.api.model.ReplicationController
 import io.fabric8.kubernetes.api.model.ServiceList
@@ -36,12 +37,13 @@ import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.web.reactive.function.BodyInserters
 import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.WebClientResponseException
-import org.springframework.web.reactive.function.client.body
 import org.springframework.web.reactive.function.client.bodyToMono
 import reactor.core.publisher.Mono
 import reactor.retry.Retry
 
 private val logger = KotlinLogging.logger {}
+
+const val DEPLOYMENT_CONFIG_ANNOTATION = "openshift.io/deployment-config.name"
 
 abstract class AbstractOpenShiftClient(private val webClient: WebClient, private val token: String? = null) {
 
@@ -92,6 +94,16 @@ abstract class AbstractOpenShiftClient(private val webClient: WebClient, private
             .bodyToMono()
     }
 */
+
+    fun deletePod(namespace: String, name: String): Mono<JsonNode> {
+        return webClient
+            .delete()
+            .openShiftResource(POD, namespace, name)
+            .bearerToken(token)
+            .retrieve()
+            .bodyToMono()
+    }
+
     fun deploy(namespace: String, name: String): Mono<JsonNode> {
         val uri = OpenShiftApiGroup.DEPLOYMENTREQUEST.uri(namespace, name)
         return webClient
@@ -162,6 +174,15 @@ abstract class AbstractOpenShiftClient(private val webClient: WebClient, private
         return webClient
             .get()
             .openShiftResource(apiGroup = SERVICE, namespace = namespace, labels = labelMap)
+            .bearerToken(token)
+            .retrieve()
+            .bodyToMono()
+    }
+
+    fun pod(namespace: String, name: String): Mono<Pod> {
+        return webClient
+            .get()
+            .openShiftResource(apiGroup = POD, namespace = namespace, name = name)
             .bearerToken(token)
             .retrieve()
             .bodyToMono()
@@ -322,3 +343,7 @@ fun <T : HasMetadata?> Mono<out KubernetesResourceList<T>>.blockForList(
     retryFirstInMs: Long = defaultFirstRetryInMs,
     retryMaxInMs: Long = defaultMaxRetryInMs
 ): List<T> = this.blockForResource(retryFirstInMs, retryMaxInMs)?.items ?: emptyList()
+
+fun Pod.getDeploymentConfigName(): String? {
+    return this.metadata.annotations[DEPLOYMENT_CONFIG_ANNOTATION]
+}
