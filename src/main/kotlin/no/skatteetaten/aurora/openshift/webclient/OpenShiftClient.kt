@@ -2,9 +2,9 @@ package no.skatteetaten.aurora.openshift.webclient
 
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import com.fkorotkov.kubernetes.extensions.metadata
-import com.fkorotkov.kubernetes.extensions.newScale
-import com.fkorotkov.kubernetes.extensions.spec
+import com.fkorotkov.kubernetes.autoscaling.v1.metadata
+import com.fkorotkov.kubernetes.autoscaling.v1.newScale
+import com.fkorotkov.kubernetes.autoscaling.v1.spec
 import io.fabric8.kubernetes.api.model.HasMetadata
 import io.fabric8.kubernetes.api.model.KubernetesResourceList
 import io.fabric8.kubernetes.api.model.Pod

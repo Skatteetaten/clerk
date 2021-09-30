@@ -1,10 +1,10 @@
 pluginManagement {
   repositories {
     maven {
-      url 'http://aurora/nexus/content/repositories/gradle-plugins/'
+      url 'https://aurora/nexus/content/repositories/gradle-plugins/'
     }
     gradlePluginPortal()
-    maven { url "http://aurora/nexus/content/groups/public" }
+    maven { url "https://aurora/nexus/content/groups/public" }
   }
   resolutionStrategy {
     eachPlugin {
