@@ -6,8 +6,8 @@ import assertk.assertions.isEqualTo
 import assertk.assertions.isFailure
 import assertk.assertions.isInstanceOf
 import assertk.assertions.isSuccess
-import com.fkorotkov.kubernetes.extensions.newScale
-import com.fkorotkov.kubernetes.extensions.spec
+import com.fkorotkov.kubernetes.autoscaling.v1.newScale
+import com.fkorotkov.kubernetes.autoscaling.v1.spec
 import com.fkorotkov.kubernetes.metadata
 import com.fkorotkov.kubernetes.newPod
 import com.fkorotkov.openshift.metadata

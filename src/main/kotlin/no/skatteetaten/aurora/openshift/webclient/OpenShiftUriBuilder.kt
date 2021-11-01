@@ -41,7 +41,7 @@ enum class OpenShiftApiGroup(
         val uriTemplate = "$path$ns$kind$n$suffix"
         val variables = mapOf(
             "namespace" to namespace,
-            "kind" to "${(alternateName ?: this.name).toLowerCase()}s",
+            "kind" to "${(alternateName ?: this.name).lowercase()}s",
             "name" to name
         )
         logger.debug { "uri template=$uriTemplate variables=$variables" }
@@ -69,9 +69,10 @@ enum class KubernetesApiGroup(private val label: String) : ApiGroup {
         val n = n(name)
         val uriTemplate = "$path$ns$kind$n"
         return OpenShiftUri(
-            uriTemplate, mapOf(
+            uriTemplate,
+            mapOf(
                 "namespace" to namespace,
-                "kind" to "${this.name.toLowerCase()}s",
+                "kind" to "${this.name.lowercase()}s",
                 "name" to name
             )
         )
