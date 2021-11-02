@@ -43,4 +43,4 @@ In the src/main/http folder create the file `rest-client.env.json` on the follow
       }
     }
     
-You can then run the different calls in the http call with either of these proilfes
+You can then run the different calls in the http call with either of these profiles
