@@ -292,23 +292,17 @@ fun <T> Mono<T>.retryWithLog(retryFirstInMs: Long, retryMaxInMs: Long) =
         Retry.backoff(3L, Duration.ofMillis(retryFirstInMs))
             .maxBackoff(Duration.ofMillis(retryMaxInMs))
             .filter { it !is WebClientResponseException.Unauthorized }
-            .onRetryExhaustedThrow { _, u ->
-                val e = u.failure()
-                OpenShiftRetryException("Retrying failed request", e)
-            }
+            .doBeforeRetry { logger.debug("retrying message=${it.failure().message}") }
     ).doOnError {
         logger.info {
-            val e = it.cause
-            val msg = "${it.message}, ${e?.message}"
-            if (e is WebClientResponseException) {
-                "$msg, ${e.request?.method} ${e.request?.uri}"
+            val msg = "Retrying failed request, ${it.message}, message=${it.cause?.message}"
+            if (it is WebClientResponseException) {
+                "message=$msg, method=${it.request?.method} uri=${it.request?.uri} code=${it.statusCode}"
             } else {
                 msg
             }
         }
     }
-
-class OpenShiftRetryException(message: String, cause: Throwable?) : RuntimeException(message, cause)
 
 data class RequestedOpenShiftResource(val namespace: String?, val kind: String?, val name: String?)
 
