@@ -2,9 +2,9 @@ package no.skatteetaten.aurora.openshift.webclient
 
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import com.fkorotkov.kubernetes.extensions.metadata
-import com.fkorotkov.kubernetes.extensions.newScale
-import com.fkorotkov.kubernetes.extensions.spec
+import com.fkorotkov.kubernetes.autoscaling.v1.metadata
+import com.fkorotkov.kubernetes.autoscaling.v1.newScale
+import com.fkorotkov.kubernetes.autoscaling.v1.spec
 import io.fabric8.kubernetes.api.model.HasMetadata
 import io.fabric8.kubernetes.api.model.KubernetesResourceList
 import io.fabric8.kubernetes.api.model.Pod
@@ -39,7 +39,7 @@ import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.WebClientResponseException
 import org.springframework.web.reactive.function.client.bodyToMono
 import reactor.core.publisher.Mono
-import reactor.retry.Retry
+import reactor.util.retry.Retry
 
 private val logger = KotlinLogging.logger {}
 
@@ -48,7 +48,6 @@ const val DEPLOYMENT_CONFIG_ANNOTATION = "openshift.io/deployment-config.name"
 abstract class AbstractOpenShiftClient(private val webClient: WebClient, private val token: String? = null) {
 
     fun scale(ns: String, n: String, count: Int): Mono<JsonNode> {
-
         val scale = newScale {
             metadata {
                 namespace = ns
@@ -63,7 +62,7 @@ abstract class AbstractOpenShiftClient(private val webClient: WebClient, private
         return webClient
             .put()
             .uri(uri.template, uri.variables)
-            .body(BodyInserters.fromObject(scale))
+            .body(BodyInserters.fromValue(scale))
             .bearerToken(token)
             .retrieve()
             .bodyToMono()
@@ -110,7 +109,7 @@ abstract class AbstractOpenShiftClient(private val webClient: WebClient, private
             .post()
             .uri(uri.template, uri.variables)
             .body(
-                BodyInserters.fromObject(
+                BodyInserters.fromValue(
                     mapOf(
                         "kind" to "DeploymentRequest",
                         "apiVersion" to "apps.openshift.io/v1",
@@ -238,7 +237,7 @@ abstract class AbstractOpenShiftClient(private val webClient: WebClient, private
         return webClient
             .post()
             .uri(uri.template, uri.variables)
-            .body(BodyInserters.fromObject(review))
+            .body(BodyInserters.fromValue(review))
             .bearerToken(token)
             .retrieve()
             .bodyToMono()
@@ -289,21 +288,21 @@ class OpenShiftClient(private val webClient: WebClient) {
 }
 
 fun <T> Mono<T>.retryWithLog(retryFirstInMs: Long, retryMaxInMs: Long) =
-    this.retryWhen(Retry.onlyIf<Mono<T>> {
-        if (it.iteration() == 3L) {
-            logger.info {
-                val e = it.exception()
-                val msg = "Retrying failed request, ${e.message}"
-                if (e is WebClientResponseException) {
-                    "$msg, ${e.request?.method} ${e.request?.uri}"
-                } else {
-                    msg
-                }
+    this.retryWhen(
+        Retry.backoff(3L, Duration.ofMillis(retryFirstInMs))
+            .maxBackoff(Duration.ofMillis(retryMaxInMs))
+            .filter { it !is WebClientResponseException.Unauthorized }
+            .doBeforeRetry { logger.debug("retrying message=${it.failure().message}") }
+    ).doOnError {
+        logger.info {
+            val msg = "Retrying failed request, ${it.message}, message=${it.cause?.message}"
+            if (it is WebClientResponseException) {
+                "message=$msg, method=${it.request?.method} uri=${it.request?.uri} code=${it.statusCode}"
+            } else {
+                msg
             }
         }
-
-        it.exception() !is WebClientResponseException.Unauthorized
-    }.exponentialBackoff(Duration.ofMillis(retryFirstInMs), Duration.ofMillis(retryMaxInMs)).retryMax(3))
+    }
 
 data class RequestedOpenShiftResource(val namespace: String?, val kind: String?, val name: String?)
 

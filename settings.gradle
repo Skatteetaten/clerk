@@ -1,18 +1,2 @@
-pluginManagement {
-  repositories {
-    maven {
-      url 'http://aurora/nexus/content/repositories/gradle-plugins/'
-    }
-    gradlePluginPortal()
-    maven { url "http://aurora/nexus/content/groups/public" }
-  }
-  resolutionStrategy {
-    eachPlugin {
-      if (requested.id.id == 'org.springframework.cloud.contract') {
-        useVersion getProperty("aurora.springCloudContractVersion")
-      }
-    }
-  }
-}
 rootProject.name = artifactId
 
