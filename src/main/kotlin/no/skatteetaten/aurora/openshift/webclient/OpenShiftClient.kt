@@ -11,7 +11,7 @@ import io.fabric8.kubernetes.api.model.Pod
 import io.fabric8.kubernetes.api.model.PodList
 import io.fabric8.kubernetes.api.model.ReplicationController
 import io.fabric8.kubernetes.api.model.ServiceList
-import io.fabric8.kubernetes.api.model.authorization.v1.SelfSubjectAccessReview
+import io.fabric8.kubernetes.api.model.authorization.SelfSubjectAccessReview
 import io.fabric8.openshift.api.model.DeploymentConfig
 import io.fabric8.openshift.api.model.ImageStreamTag
 import io.fabric8.openshift.api.model.Project
