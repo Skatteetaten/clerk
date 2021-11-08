@@ -57,6 +57,7 @@ abstract class AbstractOpenShiftClient(private val webClient: WebClient, private
                 replicas = count
             }
         }
+        scale.apiVersion = "extensions/v1beta1"
         val uri = OpenShiftApiGroup.DEPLOYMENTCONFIGSCALE.uri(ns, n)
         logger.info("URL=${uri.expand()} body=${jacksonObjectMapper().writeValueAsString(scale)}")
         return webClient
