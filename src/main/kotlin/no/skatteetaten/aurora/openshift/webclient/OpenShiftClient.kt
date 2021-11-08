@@ -59,7 +59,7 @@ abstract class AbstractOpenShiftClient(private val webClient: WebClient, private
         }
         scale.apiVersion = "extensions/v1beta1"
         val uri = OpenShiftApiGroup.DEPLOYMENTCONFIGSCALE.uri(ns, n)
-        logger.info("URL=${uri.expand()} body=${jacksonObjectMapper().writeValueAsString(scale)}")
+        logger.debug("URL=${uri.expand()} body=${jacksonObjectMapper().writeValueAsString(scale)}")
         return webClient
             .put()
             .uri(uri.template, uri.variables)
