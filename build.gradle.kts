@@ -14,7 +14,8 @@ aurora {
 
 dependencies {
     // for openshift aurora client
-    implementation("com.fkorotkov:kubernetes-dsl:2.8.1")
+//    implementation("com.fkorotkov:kubernetes-dsl:2.8.1")
+    implementation("com.github.fkorotkov:k8s-kotlin-dsl:3.0.1")
     implementation("org.springframework.boot:spring-boot-starter-webflux")
 
     implementation("org.springframework.boot:spring-boot-starter-security")
@@ -27,4 +28,8 @@ dependencies {
     testImplementation("com.nhaarman:mockito-kotlin:1.6.0")
     testImplementation("no.skatteetaten.aurora:mockmvc-extensions-kotlin:1.1.7")
     testImplementation("no.skatteetaten.aurora:mockwebserver-extensions-kotlin:1.1.8")
+}
+
+repositories {
+    maven { url = uri("https://jitpack.io") }
 }
