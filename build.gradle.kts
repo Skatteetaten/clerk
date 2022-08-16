@@ -1,6 +1,6 @@
 plugins {
     id("java")
-    id("no.skatteetaten.gradle.aurora") version "4.3.21"
+    id("no.skatteetaten.gradle.aurora") version "4.5.3"
 }
 
 aurora {
@@ -22,9 +22,9 @@ dependencies {
     testImplementation("org.springframework.security:spring-security-test")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
 
-    testImplementation("io.mockk:mockk:1.12.0")
+    testImplementation("io.mockk:mockk:1.12.5")
     testImplementation("com.willowtreeapps.assertk:assertk-jvm:0.25")
     testImplementation("com.nhaarman:mockito-kotlin:1.6.0")
-    testImplementation("no.skatteetaten.aurora:mockmvc-extensions-kotlin:1.1.7")
-    testImplementation("no.skatteetaten.aurora:mockwebserver-extensions-kotlin:1.1.8")
+    testImplementation("no.skatteetaten.aurora:mockmvc-extensions-kotlin:1.1.8")
+    testImplementation("no.skatteetaten.aurora:mockwebserver-extensions-kotlin:1.3.1")
 }
