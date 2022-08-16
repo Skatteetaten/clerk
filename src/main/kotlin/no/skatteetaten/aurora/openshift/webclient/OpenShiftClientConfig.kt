@@ -13,8 +13,6 @@ import java.security.cert.X509Certificate
 import java.util.concurrent.TimeUnit
 import javax.net.ssl.TrustManagerFactory
 import mu.KotlinLogging
-import no.skatteetaten.aurora.filter.logging.AuroraHeaderFilter
-import no.skatteetaten.aurora.filter.logging.RequestKorrelasjon
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
@@ -49,7 +47,7 @@ class OpenShiftClientConfig(@Value("\${spring.application.name}") val applicatio
         logger.debug("OpenshiftUrl=$openshiftUrl")
         val b = builder
             .baseUrl(openshiftUrl)
-            .defaultHeaders(applicationName)
+            .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
             .clientConnector(ReactorClientHttpConnector(HttpClient.from(tcpClient).compress(true)))
 
         try {
@@ -106,10 +104,5 @@ class OpenShiftClientConfig(@Value("\${spring.application.name}") val applicatio
             ks
         }
 }
-
-private fun WebClient.Builder.defaultHeaders(applicationName: String) = this
-    .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-    .defaultHeader("Klientid", applicationName)
-    .defaultHeader(AuroraHeaderFilter.KORRELASJONS_ID, RequestKorrelasjon.getId())
 
 fun Resource.readContent() = StreamUtils.copyToString(this.inputStream, StandardCharsets.UTF_8)
