@@ -29,7 +29,6 @@ import io.netty.handler.timeout.WriteTimeoutHandler
 import mu.KotlinLogging
 import no.skatteetaten.aurora.webflux.AuroraWebClientCustomizer
 import no.skatteetaten.aurora.webflux.config.WebFluxStarterApplicationConfig
-import reactor.kotlin.core.publisher.toMono
 import reactor.netty.http.client.HttpClient
 import reactor.netty.tcp.SslProvider
 import reactor.netty.tcp.TcpClient
