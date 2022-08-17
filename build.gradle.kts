@@ -10,6 +10,10 @@ aurora {
     useSpringBoot {
         useCloudContract
     }
+
+    versions {
+        javaSourceCompatibility = "17"
+    }
 }
 
 dependencies {
