@@ -1,9 +1,5 @@
 package no.skatteetaten.aurora.openshift.webclient
 
-import io.netty.channel.ChannelOption
-import io.netty.handler.ssl.SslContextBuilder
-import io.netty.handler.timeout.ReadTimeoutHandler
-import io.netty.handler.timeout.WriteTimeoutHandler
 import java.io.FileInputStream
 import java.io.IOException
 import java.nio.charset.StandardCharsets
@@ -12,11 +8,10 @@ import java.security.cert.CertificateFactory
 import java.security.cert.X509Certificate
 import java.util.concurrent.TimeUnit
 import javax.net.ssl.TrustManagerFactory
-import mu.KotlinLogging
-import no.skatteetaten.aurora.filter.logging.AuroraHeaderFilter
-import no.skatteetaten.aurora.filter.logging.RequestKorrelasjon
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration
+import org.springframework.boot.web.reactive.function.client.WebClientCustomizer
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Profile
@@ -26,6 +21,13 @@ import org.springframework.http.MediaType
 import org.springframework.http.client.reactive.ReactorClientHttpConnector
 import org.springframework.util.StreamUtils
 import org.springframework.web.reactive.function.client.WebClient
+import io.netty.channel.ChannelOption
+import io.netty.handler.ssl.SslContextBuilder
+import io.netty.handler.timeout.ReadTimeoutHandler
+import io.netty.handler.timeout.WriteTimeoutHandler
+import mu.KotlinLogging
+import no.skatteetaten.aurora.webflux.AuroraWebClientCustomizer
+import no.skatteetaten.aurora.webflux.config.WebFluxStarterApplicationConfig
 import reactor.netty.http.client.HttpClient
 import reactor.netty.tcp.SslProvider
 import reactor.netty.tcp.TcpClient
@@ -33,6 +35,7 @@ import reactor.netty.tcp.TcpClient
 private val logger = KotlinLogging.logger {}
 
 @Configuration
+@EnableAutoConfiguration(exclude = [WebFluxStarterApplicationConfig::class])
 class OpenShiftClientConfig(@Value("\${spring.application.name}") val applicationName: String) {
 
     @Bean
@@ -49,7 +52,7 @@ class OpenShiftClientConfig(@Value("\${spring.application.name}") val applicatio
         logger.debug("OpenshiftUrl=$openshiftUrl")
         val b = builder
             .baseUrl(openshiftUrl)
-            .defaultHeaders(applicationName)
+            .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
             .clientConnector(ReactorClientHttpConnector(HttpClient.from(tcpClient).compress(true)))
 
         try {
@@ -93,6 +96,9 @@ class OpenShiftClientConfig(@Value("\${spring.application.name}") val applicatio
     @Profile("local")
     fun localKeyStore(): KeyStore? = null
 
+    @Bean
+    fun webClientCustomizer(): WebClientCustomizer? = AuroraWebClientCustomizer(applicationName)
+
     @Profile("openshift")
     @Bean
     @Qualifier("openshift")
@@ -106,10 +112,5 @@ class OpenShiftClientConfig(@Value("\${spring.application.name}") val applicatio
             ks
         }
 }
-
-private fun WebClient.Builder.defaultHeaders(applicationName: String) = this
-    .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-    .defaultHeader("Klientid", applicationName)
-    .defaultHeader(AuroraHeaderFilter.KORRELASJONS_ID, RequestKorrelasjon.getId())
 
 fun Resource.readContent() = StreamUtils.copyToString(this.inputStream, StandardCharsets.UTF_8)

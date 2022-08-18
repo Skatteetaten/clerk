@@ -11,7 +11,6 @@ import io.fabric8.kubernetes.api.model.Pod
 import io.fabric8.kubernetes.api.model.PodList
 import io.fabric8.kubernetes.api.model.ReplicationController
 import io.fabric8.kubernetes.api.model.ServiceList
-import io.fabric8.kubernetes.api.model.authorization.SelfSubjectAccessReview
 import io.fabric8.openshift.api.model.DeploymentConfig
 import io.fabric8.openshift.api.model.ImageStreamTag
 import io.fabric8.openshift.api.model.Project
@@ -38,6 +37,7 @@ import org.springframework.web.reactive.function.BodyInserters
 import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.WebClientResponseException
 import org.springframework.web.reactive.function.client.bodyToMono
+import io.fabric8.kubernetes.api.model.authorization.v1.SelfSubjectAccessReview
 import reactor.core.publisher.Mono
 import reactor.util.retry.Retry
 

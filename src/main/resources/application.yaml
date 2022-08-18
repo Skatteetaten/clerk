@@ -27,7 +27,7 @@ spring:
     profiles: local
 
 openshift:
-    cluster: utv
+    cluster: utv04
 
 integrations:
   openshift:
